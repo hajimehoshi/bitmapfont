@@ -64,7 +64,7 @@ func run() error {
 	dst := image.NewRGBA(image.Rect(0, 0, 320, 240))
 	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
 
-	f := mplusbitmap.Font12r
+	f := mplusbitmap.Gothic12r
 	d := font.Drawer{
 		Dst:  dst,
 		Src:  image.NewUniform(color.Black),
