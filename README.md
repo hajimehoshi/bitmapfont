@@ -1,5 +1,7 @@
 # go-mplus-bitmap
 
+[![GoDoc](https://godoc.org/github.com/hajimehoshi/go-mplus-bitmap?status.svg)](http://godoc.org/github.com/hajimehoshi/go-mplus-bitmap)
+
 Package mplusbitmap offers a font.Face value of M+ Bitmap font.
 
 * [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/)
