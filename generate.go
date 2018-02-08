@@ -14,5 +14,7 @@
 
 package mplusbitmap
 
-//go:generate go run gen.go -output image.go
+// Package github.com/hajimehoshi/file2byteslice is required.
+
+//go:generate file2byteslice -input mplus.png -output image.go -package mplusbitmap -var imageBytes
 //go:generate gofmt -s -w .
