@@ -29,7 +29,7 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 
-	"github.com/hajimehoshi/go-mplus-bitmap"
+	"github.com/hajimehoshi/go-mplusbitmap"
 )
 
 func writeImageToTempFile(img image.Image) (string, error) {
