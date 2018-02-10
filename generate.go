@@ -14,7 +14,9 @@
 
 package mplusbitmap
 
+// Package github.com/hajimehoshi/png2compressedrgba is required.
 // Package github.com/hajimehoshi/file2byteslice is required.
 
-//go:generate file2byteslice -input mplus.png -output image.go -package mplusbitmap -var imageBytes
+//go:generate png2compressedrgba -input mplus.png -output /tmp/compressedMplusRGBA
+//go:generate file2byteslice -input /tmp/compressedMplusRGBA -output image.go -package mplusbitmap -var compressedMplusRGBA
 //go:generate gofmt -s -w .

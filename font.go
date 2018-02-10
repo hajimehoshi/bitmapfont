@@ -19,21 +19,38 @@ package mplusbitmap
 
 import (
 	"bytes"
+	"compress/gzip"
 	"image"
-	"image/png"
+	"io/ioutil"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
 
-var imageData *image.NRGBA
+var imageData *image.RGBA
+
+const (
+	imageWidth  = 3072
+	imageHeight = 4096
+)
 
 func init() {
-	img, err := png.Decode(bytes.NewReader(imageBytes))
+	s, err := gzip.NewReader(bytes.NewReader(compressedMplusRGBA))
 	if err != nil {
 		panic(err)
 	}
-	imageData = img.(*image.NRGBA)
+	defer s.Close()
+
+	pix, err := ioutil.ReadAll(s)
+	if err != nil {
+		panic(err)
+	}
+
+	imageData = &image.RGBA{
+		Pix:    pix,
+		Stride: 4 * imageWidth,
+		Rect:   image.Rect(0, 0, imageWidth, imageHeight),
+	}
 }
 
 const (
