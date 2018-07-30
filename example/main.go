@@ -51,10 +51,6 @@ func writeImageToTempFile(img image.Image) (string, error) {
 	return n + suffix, nil
 }
 
-const text = `Hello, World!
-
-こんにちは世界!`
-
 func run() error {
 	const (
 		ox = 16
@@ -72,6 +68,11 @@ func run() error {
 		Dot:  fixed.P(ox, oy),
 	}
 
+	text := `Hello, World!
+
+こんにちは世界!
+
+` + string(0x301c) + string(0xff5e)
 	for _, l := range strings.Split(text, "\n") {
 		d.DrawString(l)
 		d.Dot.X = fixed.I(ox)

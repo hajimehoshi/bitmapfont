@@ -87,6 +87,11 @@ func (m *mplusFont) Glyph(dot fixed.Point26_6, r rune) (dr image.Rectangle, mask
 		return
 	}
 
+	// Use 'Wave Dash' glyph for 'Fullwidth Tilde'.
+	if r == 0xff5e {
+		r = 0x301c
+	}
+
 	rw := runeWidth(r)
 	dx := dot.X.Floor() - dotX
 	dy := dot.Y.Floor() - dotY
