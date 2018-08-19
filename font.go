@@ -14,7 +14,7 @@
 
 // Package bitmapfont offers a font.Face value of the bitmap font.
 //
-//   * U+AC00–D7AF: Bitmap Hangul glyphs by Hajime Hoshi (Public Domain)
+//   * U+AC00–D7AF: [Baekmuk Gulim](https://github.com/chocolatemelt/baekmuk) (Baekmuk License)
 //   * Others:      [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
 package bitmapfont
 
