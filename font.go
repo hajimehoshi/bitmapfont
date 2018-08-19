@@ -36,7 +36,7 @@ const (
 )
 
 func init() {
-	s, err := gzip.NewReader(bytes.NewReader(compressedMplusRGBA))
+	s, err := gzip.NewReader(bytes.NewReader(compressedFontRGBA))
 	if err != nil {
 		panic(err)
 	}
@@ -73,17 +73,17 @@ func runeWidth(r rune) int {
 }
 
 // Gothic12r is a font.Face of the bitmap font (12px regular).
-var Gothic12r font.Face = &mplusFont{}
+var Gothic12r font.Face = &bitmapFont{}
 
-type mplusFont struct {
+type bitmapFont struct {
 	scale int
 }
 
-func (m *mplusFont) Close() error {
+func (m *bitmapFont) Close() error {
 	return nil
 }
 
-func (m *mplusFont) Glyph(dot fixed.Point26_6, r rune) (dr image.Rectangle, mask image.Image, maskp image.Point, advance fixed.Int26_6, ok bool) {
+func (m *bitmapFont) Glyph(dot fixed.Point26_6, r rune) (dr image.Rectangle, mask image.Image, maskp image.Point, advance fixed.Int26_6, ok bool) {
 	if r >= 0x10000 {
 		return
 	}
@@ -107,7 +107,7 @@ func (m *mplusFont) Glyph(dot fixed.Point26_6, r rune) (dr image.Rectangle, mask
 	return
 }
 
-func (m *mplusFont) GlyphBounds(r rune) (bounds fixed.Rectangle26_6, advance fixed.Int26_6, ok bool) {
+func (m *bitmapFont) GlyphBounds(r rune) (bounds fixed.Rectangle26_6, advance fixed.Int26_6, ok bool) {
 	if r >= 0x10000 {
 		return
 	}
@@ -117,7 +117,7 @@ func (m *mplusFont) GlyphBounds(r rune) (bounds fixed.Rectangle26_6, advance fix
 	return
 }
 
-func (m *mplusFont) GlyphAdvance(r rune) (advance fixed.Int26_6, ok bool) {
+func (m *bitmapFont) GlyphAdvance(r rune) (advance fixed.Int26_6, ok bool) {
 	if r >= 0x10000 {
 		return
 	}
@@ -126,11 +126,11 @@ func (m *mplusFont) GlyphAdvance(r rune) (advance fixed.Int26_6, ok bool) {
 	return
 }
 
-func (m *mplusFont) Kern(r0, r1 rune) fixed.Int26_6 {
+func (m *bitmapFont) Kern(r0, r1 rune) fixed.Int26_6 {
 	return 0
 
 }
-func (m *mplusFont) Metrics() font.Metrics {
+func (m *bitmapFont) Metrics() font.Metrics {
 	return font.Metrics{
 		Height:  fixed.I(charHeight),
 		Ascent:  fixed.I(dotY),
