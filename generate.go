@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package mplusbitmap
+package bitmapfont
 
 // Package github.com/hajimehoshi/png2compressedrgba is required.
 // Package github.com/hajimehoshi/file2byteslice is required.
 
 //go:generate go run ./hangul/main.go -input ./hangul/base.png -output /tmp/hangul.png
 //go:generate go run gen.go -input mplus.png -inputhangul /tmp/hangul.png -output /tmp/compressedMplusRGBA
-//go:generate file2byteslice -input /tmp/compressedMplusRGBA -output image.go -package mplusbitmap -var compressedMplusRGBA
+//go:generate file2byteslice -input /tmp/compressedMplusRGBA -output image.go -package bitmapfont -var compressedMplusRGBA
 //go:generate gofmt -s -w .

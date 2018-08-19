@@ -29,7 +29,7 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 
-	"github.com/hajimehoshi/go-mplusbitmap"
+	"github.com/hajimehoshi/bitmapfont"
 )
 
 func writeImageToTempFile(img image.Image) (string, error) {
@@ -60,7 +60,7 @@ func run() error {
 	dst := image.NewRGBA(image.Rect(0, 0, 320, 240))
 	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
 
-	f := mplusbitmap.Gothic12r
+	f := bitmapfont.Gothic12r
 	d := font.Drawer{
 		Dst:  dst,
 		Src:  image.NewUniform(color.Black),

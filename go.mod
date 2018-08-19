@@ -1,6 +1,3 @@
-module github.com/hajimehoshi/go-mplusbitmap
+module github.com/hajimehoshi/bitmapfont
 
-require (
-	github.com/pkg/browser v0.0.0-20170505125900-c90ca0c84f15
-	golang.org/x/image v0.0.0-20180708004352-c73c2afc3b81
-)
+require golang.org/x/image v0.0.0-20180708004352-c73c2afc3b81
