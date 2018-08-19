@@ -48,11 +48,13 @@ func run() error {
 		Dot:  fixed.P(ox, oy),
 	}
 
-	text := `All human beings are born free and equal in dignity and rights.
-
-すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
-
-모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
+	text := `en: All human beings are born free and equal in dignity and rights.
+es: Todos los seres humanos nacen libres e iguales en dignidad y derechos y,
+fr: Tous les êtres humains naissent libres et égaux en dignité et en droits.
+de: Alle Menschen sind frei und gleich an Würde und Rechten geboren.
+pt: Todos os seres humanos nascem livres e iguais em dignidade e em direitos.
+ja: すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
+ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
 `
 	for _, l := range strings.Split(text, "\n") {
 		d.DrawString(l)
