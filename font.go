@@ -72,7 +72,7 @@ func runeWidth(r rune) int {
 	return charFullWidth
 }
 
-// Gothic12r is a font.Face of M+ bitmap font (M+ gothic 12r).
+// Gothic12r is a font.Face of the bitmap font (12px regular).
 var Gothic12r font.Face = &mplusFont{}
 
 type mplusFont struct {
