@@ -21,7 +21,6 @@ import (
 	"image/color"
 	"image/draw"
 	"image/png"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -32,32 +31,13 @@ import (
 	"github.com/hajimehoshi/bitmapfont"
 )
 
-func writeImageToTempFile(img image.Image) (string, error) {
-	f, err := ioutil.TempFile("", "mplus")
-	if err != nil {
-		return "", err
-	}
-	defer f.Close()
-
-	if err := png.Encode(f, img); err != nil {
-		return "", err
-	}
-
-	const suffix = ".png"
-	n := f.Name()
-	if err := os.Rename(n, n+suffix); err != nil {
-		return "", err
-	}
-	return n + suffix, nil
-}
-
 func run() error {
 	const (
 		ox = 16
 		oy = 16
 	)
 
-	dst := image.NewRGBA(image.Rect(0, 0, 320, 240))
+	dst := image.NewRGBA(image.Rect(0, 0, 640, 120))
 	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
 
 	f := bitmapfont.Gothic12r
@@ -68,21 +48,26 @@ func run() error {
 		Dot:  fixed.P(ox, oy),
 	}
 
-	text := `Hello, World!
+	text := `All human beings are born free and equal in dignity and rights.
 
-こんにちは世界!
+すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
 
-안녕하세요
-
-` + string(0x301c) + string(0xff5e)
+모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
+`
 	for _, l := range strings.Split(text, "\n") {
 		d.DrawString(l)
 		d.Dot.X = fixed.I(ox)
 		d.Dot.Y += f.Metrics().Height
 	}
 
-	path, err := writeImageToTempFile(d.Dst)
+	path := "example.png"
+	fout, err := os.Create(path)
 	if err != nil {
+		return err
+	}
+	defer fout.Close()
+
+	if err := png.Encode(fout, d.Dst); err != nil {
 		return err
 	}
 

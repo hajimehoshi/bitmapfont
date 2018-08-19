@@ -2,6 +2,8 @@
 
 [![GoDoc](https://godoc.org/github.com/hajimehoshi/go-mplusbitmap?status.svg)](http://godoc.org/github.com/hajimehoshi/go-mplusbitmap)
 
+![Example](example/example.png)
+
 Package bitmapfont offers a font.Face value of the bitmap font.
 
 * U+AC00–D7AF: Bitmap Hangul glyphs by Hajime Hoshi (Public Domain)
