@@ -20,9 +20,9 @@ hereby granted, provided that both the copyright notice and
 this permission notice appear in all copies of the font,
 derivative works or modified versions, and that the following
 acknowledgement appear in supporting documentation:
-Baekmuk Batang, Baekmuk Dotum, Baekmuk Gulim, and
-Baekmuk Headline are registered trademarks owned by
-Kim Jeong-Hwan.
+    Baekmuk Batang, Baekmuk Dotum, Baekmuk Gulim, and
+    Baekmuk Headline are registered trademarks owned by
+    Kim Jeong-Hwan.
 ```
 
 ## M+ Bitmap Font License
