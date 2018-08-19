@@ -1,6 +1,6 @@
 # bitmapfont
 
-[![GoDoc](https://godoc.org/github.com/hajimehoshi/go-mplusbitmap?status.svg)](http://godoc.org/github.com/hajimehoshi/go-mplusbitmap)
+[![GoDoc](https://godoc.org/github.com/hajimehoshi/bitmapfont?status.svg)](http://godoc.org/github.com/hajimehoshi/go-mplusbitmap)
 
 ![Example](example/example.png)
 
