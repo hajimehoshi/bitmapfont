@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package mplusbitmap offers a font.Face value of M+ Bitmap font.
+// Package mplusbitmap offers a font.Face value of M+ Bitmap font and other additional glyphs.
 //
-// http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/
+//   * U+AC00–D7AF: Bitmap Hangul glyphs by Hajime Hoshi (Public Domain)
+//   * Others:      [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
 package mplusbitmap
 
 import (

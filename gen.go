@@ -19,17 +19,44 @@ package main
 import (
 	"compress/gzip"
 	"flag"
+	"image"
+	"image/draw"
 	"image/png"
 	"os"
 )
 
 var (
-	input  = flag.String("input", "", "input file")
-	output = flag.String("output", "", "output file")
+	flagInput       = flag.String("input", "", "input file")
+	flagInputHangul = flag.String("inputhangul", "", "input Hangul file")
+	flagOutput      = flag.String("output", "", "output file")
 )
 
+const (
+	glyphWidth  = 12
+	glyphHeight = 16
+)
+
+func addHangul(img draw.Image) error {
+	finh, err := os.Open(*flagInputHangul)
+	if err != nil {
+		return err
+	}
+	defer finh.Close()
+
+	imgh, err := png.Decode(finh)
+	if err != nil {
+		return err
+	}
+
+	b := imgh.Bounds()
+	oy := 0xac00 / 256 * glyphHeight
+	dst := image.Rect(0, oy, b.Dx(), oy+b.Dy())
+	draw.Draw(img, dst, imgh, image.ZP, draw.Over)
+	return nil
+}
+
 func run() error {
-	fin, err := os.Open(*input)
+	fin, err := os.Open(*flagInput)
 	if err != nil {
 		return err
 	}
@@ -37,6 +64,10 @@ func run() error {
 
 	img, err := png.Decode(fin)
 	if err != nil {
+		return err
+	}
+
+	if err := addHangul(img.(*image.NRGBA)); err != nil {
 		return err
 	}
 
@@ -53,7 +84,7 @@ func run() error {
 		}
 	}
 
-	fout, err := os.Create(*output)
+	fout, err := os.Create(*flagOutput)
 	if err != nil {
 		return err
 	}

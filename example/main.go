@@ -72,6 +72,8 @@ func run() error {
 
 こんにちは世界!
 
+안녕하세요
+
 ` + string(0x301c) + string(0xff5e)
 	for _, l := range strings.Split(text, "\n") {
 		d.DrawString(l)
