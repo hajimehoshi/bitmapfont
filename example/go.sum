@@ -1,5 +1,3 @@
-github.com/hajimehoshi/go-mplusbitmap v1.0.1 h1:Q7vA2o/9uIXS0isGPeXc4ahLMFBfZl592OZgb/MH90w=
-github.com/hajimehoshi/go-mplusbitmap v1.0.1/go.mod h1:zW+y7DzqcVGNiGVPga2gau26lxIzv7zvtOEjgMiz6pU=
 github.com/pkg/browser v0.0.0-20170505125900-c90ca0c84f15 h1:mrI+6Ae64Wjt+uahGe5we/sPS1sXjvfT3YjtawAVgps=
 github.com/pkg/browser v0.0.0-20170505125900-c90ca0c84f15/go.mod h1:4OwLy04Bl9Ef3GJJCoec+30X3LQs/0/m4HFRt/2LUSA=
 golang.org/x/image v0.0.0-20180708004352-c73c2afc3b81 h1:00VmoueYNlNz/aHIilyyQz/MHSqGoWJzpFv/HW8xpzI=
