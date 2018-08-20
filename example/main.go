@@ -17,6 +17,7 @@
 package main
 
 import (
+	"flag"
 	"image"
 	"image/color"
 	"image/draw"
@@ -31,13 +32,39 @@ import (
 	"github.com/hajimehoshi/bitmapfont"
 )
 
+var (
+	flagTest = flag.Bool("test", false, "test mode")
+)
+
 func run() error {
 	const (
 		ox = 16
 		oy = 16
 	)
 
-	dst := image.NewRGBA(image.Rect(0, 0, 640, 120))
+	width := 640
+	height := 120
+	text := `en: All human beings are born free and equal in dignity and rights.
+es: Todos los seres humanos nacen libres e iguales en dignidad y derechos y,
+fr: Tous les êtres humains naissent libres et égaux en dignité et en droits.
+de: Alle Menschen sind frei und gleich an Würde und Rechten geboren.
+pt: Todos os seres humanos nascem livres e iguais em dignidade e em direitos.
+ja: すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
+ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
+`
+	if *flagTest {
+		width = 12*256
+		height = 16*256
+		text = ""
+		for i := 0; i < 256; i++ {
+			for j := 0; j < 256; j++ {
+				text += string(rune(i*256+j))
+			}
+			text += "\n"
+		}
+	}
+
+	dst := image.NewRGBA(image.Rect(0, 0, width, height))
 	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
 
 	f := bitmapfont.Gothic12r
@@ -48,14 +75,6 @@ func run() error {
 		Dot:  fixed.P(ox, oy),
 	}
 
-	text := `en: All human beings are born free and equal in dignity and rights.
-es: Todos los seres humanos nacen libres e iguales en dignidad y derechos y,
-fr: Tous les êtres humains naissent libres et égaux en dignité et en droits.
-de: Alle Menschen sind frei und gleich an Würde und Rechten geboren.
-pt: Todos os seres humanos nascem livres e iguais em dignidade e em direitos.
-ja: すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
-ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
-`
 	for _, l := range strings.Split(text, "\n") {
 		d.DrawString(l)
 		d.Dot.X = fixed.I(ox)
@@ -63,6 +82,9 @@ ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에
 	}
 
 	path := "example.png"
+	if *flagTest {
+		path = "example_test.png"
+	}
 	fout, err := os.Create(path)
 	if err != nil {
 		return err
@@ -80,6 +102,7 @@ ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에
 }
 
 func main() {
+	flag.Parse()
 	if err := run(); err != nil {
 		panic(err)
 	}
