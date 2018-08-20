@@ -49,8 +49,7 @@ func addHangul(img draw.Image) error {
 	}
 
 	b := imgh.Bounds()
-	oy := 0xac00 / 256 * glyphHeight
-	dst := image.Rect(0, oy, b.Dx(), oy+b.Dy())
+	dst := image.Rect(0, 0, b.Dx(), b.Dy())
 	draw.Draw(img, dst, imgh, image.ZP, draw.Over)
 	return nil
 }

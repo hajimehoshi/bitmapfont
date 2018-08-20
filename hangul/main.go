@@ -49,11 +49,13 @@ func conv() (map[int]rune, error) {
 
 	s := bufio.NewScanner(f)
 	for s.Scan() {
-		tokens := strings.Split(s.Text(), "  ")
-		if len(tokens) != 3 {
-			continue
+		line := s.Text()
+		if idx := strings.Index(line, "#"); idx != -1 {
+			line = line[:idx]
 		}
-		if !strings.HasPrefix(tokens[2], "# HANGUL SYLLABLE") {
+		line = strings.TrimSpace(line)
+		tokens := strings.Split(line, "  ")
+		if len(tokens) != 2 {
 			continue
 		}
 		ksx, err := strconv.ParseInt(tokens[0], 0, 32)
@@ -111,10 +113,10 @@ func bdf() (map[rune]glyph, error) {
 			if err != nil {
 				return nil, err
 			}
-			if idx < 0x3021 || 0x487e < idx {
-				continue
-			}
 			r = c[int(idx)]
+			if !isRuneToDraw(r) {
+				r = 0
+			}
 			continue
 		}
 		if strings.HasPrefix(line, "BBX ") {
@@ -191,6 +193,30 @@ func bdf() (map[rune]glyph, error) {
 	return m, nil
 }
 
+func isRuneToDraw(r rune) bool {
+	// KOREAN STANDARD SYMBOL
+	if r == 0x327f {
+		return true
+	}
+	// CIRCLE HANGLE
+	if 0x3260 <= r && r <= 0x327e {
+		return true
+	}
+	// PARENTHESIZED HANGUL
+	if 0x3200 <= r && r <= 0x321f {
+		return true
+	}
+	// HANGUL LETTER (Hangul Compatible Jamo)
+	if 0x3130 <= r && r <= 0x318f {
+		return true
+	}
+	// HANGUL SYLLABLE
+	if 0xac00 <= r && r <= 0xd7af {
+		return true
+	}
+	return false
+}
+
 func run() error {
 	b, err := bdf()
 	if err != nil {
@@ -198,14 +224,12 @@ func run() error {
 	}
 
 	const (
-		firstCode = 0xac00
-		lastCode  = 0xd7a3
-		num       = lastCode - firstCode + 1
-		numX      = 256
-		srcW      = 12
-		srcH      = 12
-		dstW      = 12
-		dstH      = 16
+		num  = 65536
+		numX = 256
+		srcW = 12
+		srcH = 12
+		dstW = 12
+		dstH = 16
 	)
 
 	offsetY := 0
@@ -215,10 +239,13 @@ func run() error {
 	result := image.NewRGBA(image.Rect(0, 0, numX*dstW, ((num-1)/numX+1)*dstH+offsetY))
 
 	runeToPos := func(r rune) image.Point {
-		return image.Pt(int(r%numX)*dstW, int((r-firstCode)/numX)*dstH+offsetY)
+		return image.Pt(int(r%numX)*dstW, int(r/numX)*dstH+offsetY)
 	}
 
 	for r, g := range b {
+		if !isRuneToDraw(r) {
+			continue
+		}
 		pos := runeToPos(r)
 		for j := 0; j < len(g.bits)/2; j++ {
 			for i := 0; i < srcW; i++ {
@@ -239,12 +266,12 @@ func run() error {
 				x += dstW / 2
 				continue
 			}
-			if firstCode <= r && r <= lastCode {
-				pos := runeToPos(r)
-				draw.Draw(result, image.Rect(x, 0, x+dstW, dstH), result, pos, draw.Over)
-				x += dstW
+			if !isRuneToDraw(r) {
 				continue
 			}
+			pos := runeToPos(r)
+			draw.Draw(result, image.Rect(x, 0, x+dstW, dstH), result, pos, draw.Over)
+			x += dstW
 		}
 	}
 
