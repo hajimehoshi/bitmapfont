@@ -4,12 +4,14 @@
 
 ![Example](example/example.png)
 
-Package bitmapfont offers a font.Face value of the bitmap font.
+Package bitmapfont offers a font.Face value of some bitmap fonts.
 
    * U+3130-U+318F, U+3200–U+321F, U+3260-u+327F, U+AC00-U+D7AF:
      [Baekmuk Gulim](http://kldp.net/baekmuk/) (Baekmuk License)
    * Others:
      [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
+
+There is one font face with glyph size 6x13 for halfwidth, and 12x13 for fullwidth so far.
 
 ## Baekmuk License
 

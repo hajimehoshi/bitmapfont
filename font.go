@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package bitmapfont offers a font.Face value of the bitmap font.
+// Package bitmapfont offers a font.Face value of some bitmap fonts.
 //
 //   * U+3130-U+318F, U+3200–U+321F, U+3260-u+327F, U+AC00-U+D7AF:
 //     [Baekmuk Gulim](http://kldp.net/baekmuk/) (Baekmuk License)
