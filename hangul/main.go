@@ -88,7 +88,7 @@ func bdf() (map[rune]glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	f, err := os.Open(filepath.Join(dir, "gulim12.bdf.txt"))
+	f, err := os.Open(filepath.Join(dir, "gulim12.bdf"))
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func bdf() (map[rune]glyph, error) {
 			if ox < 0 || oy < 0 {
 				panic("not reached")
 			}
-			oy += (int(h) - 12) - 1
+			oy += (int(h) - 12) - 2
 		}
 		if strings.HasPrefix(line, "BITMAP") {
 			if r == 0 {
