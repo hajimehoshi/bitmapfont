@@ -77,13 +77,7 @@ func conv() (map[int]rune, error) {
 	return m, nil
 }
 
-type glyph struct {
-	bits [][]byte
-	ox   int
-	oy   int
-}
-
-func readBDF() (map[rune]glyph, error) {
+func readBDF() (map[rune]*bdf.Glyph, error) {
 	c, err := conv()
 	if err != nil {
 		return nil, err
@@ -98,7 +92,7 @@ func readBDF() (map[rune]glyph, error) {
 	}
 	defer f.Close()
 
-	m := map[rune]glyph{}
+	m := map[rune]*bdf.Glyph{}
 
 	glyphs, err := bdf.Parse(f)
 	if err != nil {
@@ -109,13 +103,7 @@ func readBDF() (map[rune]glyph, error) {
 		if !ok {
 			continue
 		}
-		ox := int(g.X)
-		oy := int(g.Y) + (int(g.Height) - 12)
-		m[r] = glyph{
-			bits: g.Bitmap,
-			ox:   ox,
-			oy:   oy,
-		}
+		m[r] = g
 	}
 
 	return m, nil
@@ -175,15 +163,17 @@ func run() error {
 			continue
 		}
 		pos := runeToPos(r)
-		for j := 0; j < len(g.bits); j++ {
+		for j := 0; j < len(g.Bitmap); j++ {
 			w := srcW
-			if w < len(g.bits[j])*8 {
-				w = len(g.bits[j]) * 8
+			if w < len(g.Bitmap[j])*8 {
+				w = len(g.Bitmap[j]) * 8
 			}
 			for i := 0; i < w; i++ {
-				bits := g.bits[j][i/8]
+				bits := g.Bitmap[j][i/8]
 				if (bits>>uint(7-i%8))&1 != 0 {
-					result.Set(pos.X+i+g.ox, pos.Y+j-g.oy, color.White)
+					x := g.X
+					y := g.Y + g.Height - 12
+					result.Set(pos.X+i+x, pos.Y+j-y, color.White)
 				}
 			}
 		}
