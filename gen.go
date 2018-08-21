@@ -23,12 +23,13 @@ import (
 	"image/draw"
 	"image/png"
 	"os"
+
+	"github.com/hajimehoshi/bitmapfont/baekmuk"
 )
 
 var (
-	flagInput       = flag.String("input", "", "input file")
-	flagInputHangul = flag.String("inputhangul", "", "input Hangul file")
-	flagOutput      = flag.String("output", "", "output file")
+	flagInput  = flag.String("input", "", "input file")
+	flagOutput = flag.String("output", "", "output file")
 )
 
 const (
@@ -37,20 +38,16 @@ const (
 )
 
 func addHangul(img draw.Image) error {
-	finh, err := os.Open(*flagInputHangul)
-	if err != nil {
-		return err
+	for r := rune(0); r < 0xffff; r++ {
+		glyph := baekmuk.Glyph(r)
+		if glyph == nil {
+			continue
+		}
+		dstX := (int(r) % 256) * glyphWidth
+		dstY := (int(r) / 256) * glyphHeight
+		dst := image.Rect(dstX, dstY, dstX+glyphWidth, dstY+glyphHeight)
+		draw.Draw(img, dst, glyph, dst.Bounds().Min, draw.Over)
 	}
-	defer finh.Close()
-
-	imgh, err := png.Decode(finh)
-	if err != nil {
-		return err
-	}
-
-	b := imgh.Bounds()
-	dst := image.Rect(0, 0, b.Dx(), b.Dy())
-	draw.Draw(img, dst, imgh, image.ZP, draw.Over)
 	return nil
 }
 
