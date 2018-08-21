@@ -109,19 +109,8 @@ func readBDF() (map[rune]glyph, error) {
 		if !ok {
 			continue
 		}
-		const (
-			minX = 0
-			minY = -2
-		)
-		if int(g.Height) > 12 {
-			panic("not reached")
-		}
-		ox := int(g.X) - minX
-		oy := int(g.Y) - minY
-		if ox < 0 || oy < 0 {
-			panic("not reached")
-		}
-		oy += (int(g.Height) - 12) - 2
+		ox := int(g.X)
+		oy := int(g.Y) + (int(g.Height) - 12)
 		m[r] = glyph{
 			bits: g.Bitmap,
 			ox:   ox,
