@@ -58,7 +58,7 @@ ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에
 		text = ""
 		for i := 0; i < 256; i++ {
 			for j := 0; j < 256; j++ {
-				text += string(rune(i*256+j))
+				text += string(rune(i*256 + j))
 			}
 			text += "\n"
 		}

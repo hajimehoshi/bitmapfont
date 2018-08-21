@@ -19,6 +19,7 @@ package main
 import (
 	"bufio"
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -76,7 +77,7 @@ func conv() (map[int]rune, error) {
 }
 
 type glyph struct {
-	bits []byte
+	bits [][]byte
 	ox   int
 	oy   int
 }
@@ -102,7 +103,7 @@ func bdf() (map[rune]glyph, error) {
 	r := rune(0)
 	ox := 0
 	oy := 0
-	var g []byte
+	var g [][]byte
 	for s.Scan() {
 		line := s.Text()
 		if strings.HasPrefix(line, "ENCODING ") {
@@ -154,7 +155,7 @@ func bdf() (map[rune]glyph, error) {
 			if r == 0 {
 				continue
 			}
-			g = []byte{}
+			g = [][]byte{}
 			continue
 		}
 		if strings.HasPrefix(line, "ENDCHAR") {
@@ -176,17 +177,18 @@ func bdf() (map[rune]glyph, error) {
 			continue
 		}
 		if g != nil {
-			for i := 0; i < 2; i++ {
-				if len(line) <= 2*i {
-					g = append(g, 0)
-					continue
-				}
-				b, err := strconv.ParseInt(line[2*i:2*i+2], 16, 32)
+			if len(line)%2 != 0 {
+				return nil, fmt.Errorf("bdf: len(line) must be even")
+			}
+			bits := []byte{}
+			for ; len(line) > 0; line = line[2:] {
+				b, err := strconv.ParseInt(line[:2], 16, 32)
 				if err != nil {
 					return nil, err
 				}
-				g = append(g, byte(b))
+				bits = append(bits, byte(b))
 			}
+			g = append(g, bits)
 		}
 	}
 
@@ -247,9 +249,13 @@ func run() error {
 			continue
 		}
 		pos := runeToPos(r)
-		for j := 0; j < len(g.bits)/2; j++ {
-			for i := 0; i < srcW; i++ {
-				bits := g.bits[2*j+i/8]
+		for j := 0; j < len(g.bits); j++ {
+			w := srcW
+			if w < len(g.bits[j])*8 {
+				w = len(g.bits[j]) * 8
+			}
+			for i := 0; i < w; i++ {
+				bits := g.bits[j][i/8]
 				if (bits>>uint(7-i%8))&1 != 0 {
 					result.Set(pos.X+i+g.ox, pos.Y+j-g.oy, color.White)
 				}
