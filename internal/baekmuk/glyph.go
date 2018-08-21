@@ -24,7 +24,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hajimehoshi/bitmapfont/bdf"
+	"github.com/hajimehoshi/bitmapfont/internal/bdf"
 )
 
 func conv() (map[int]rune, error) {
