@@ -19,7 +19,6 @@ package main
 import (
 	"bufio"
 	"flag"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -29,6 +28,8 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+
+	"github.com/hajimehoshi/bitmapfont/bdf"
 )
 
 var (
@@ -82,7 +83,7 @@ type glyph struct {
 	oy   int
 }
 
-func bdf() (map[rune]glyph, error) {
+func readBDF() (map[rune]glyph, error) {
 	c, err := conv()
 	if err != nil {
 		return nil, err
@@ -99,96 +100,32 @@ func bdf() (map[rune]glyph, error) {
 
 	m := map[rune]glyph{}
 
-	s := bufio.NewScanner(f)
-	r := rune(0)
-	ox := 0
-	oy := 0
-	var g [][]byte
-	for s.Scan() {
-		line := s.Text()
-		if strings.HasPrefix(line, "ENCODING ") {
-			if r != 0 {
-				panic("not reach")
-			}
-			idx, err := strconv.ParseInt(line[len("ENCODING "):], 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			r = c[int(idx)]
-			if !isRuneToDraw(r) {
-				r = 0
-			}
+	glyphs, err := bdf.Parse(f)
+	if err != nil {
+		return nil, err
+	}
+	for _, g := range glyphs {
+		r, ok := c[g.Encoding]
+		if !ok {
 			continue
 		}
-		if strings.HasPrefix(line, "BBX ") {
-			if r == 0 {
-				continue
-			}
-			tokens := strings.Split(line, " ")
-			h, err := strconv.ParseInt(tokens[2], 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			x, err := strconv.ParseInt(tokens[3], 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			y, err := strconv.ParseInt(tokens[4], 10, 32)
-			if err != nil {
-				return nil, err
-			}
-			const (
-				minX = 0
-				minY = -2
-			)
-			if int(h) > 12 {
-				panic("not reached")
-			}
-			ox = int(x) - minX
-			oy = int(y) - minY
-			if ox < 0 || oy < 0 {
-				panic("not reached")
-			}
-			oy += (int(h) - 12) - 2
+		const (
+			minX = 0
+			minY = -2
+		)
+		if int(g.Height) > 12 {
+			panic("not reached")
 		}
-		if strings.HasPrefix(line, "BITMAP") {
-			if r == 0 {
-				continue
-			}
-			g = [][]byte{}
-			continue
+		ox := int(g.X) - minX
+		oy := int(g.Y) - minY
+		if ox < 0 || oy < 0 {
+			panic("not reached")
 		}
-		if strings.HasPrefix(line, "ENDCHAR") {
-			if r == 0 {
-				continue
-			}
-			if len(g) == 0 {
-				panic("not reached: no glyph for " + string(r))
-			}
-			m[r] = glyph{
-				bits: g,
-				ox:   ox,
-				oy:   oy,
-			}
-			r = 0
-			g = nil
-			ox = 0
-			oy = 0
-			continue
-		}
-		if g != nil {
-			if len(line)%2 != 0 {
-				return nil, fmt.Errorf("bdf: len(line) must be even")
-			}
-			bits := []byte{}
-			for ; len(line) > 0; line = line[2:] {
-				b, err := strconv.ParseInt(line[:2], 16, 32)
-				if err != nil {
-					return nil, err
-				}
-				bits = append(bits, byte(b))
-			}
-			g = append(g, bits)
+		oy += (int(g.Height) - 12) - 2
+		m[r] = glyph{
+			bits: g.Bitmap,
+			ox:   ox,
+			oy:   oy,
 		}
 	}
 
@@ -220,7 +157,7 @@ func isRuneToDraw(r rune) bool {
 }
 
 func run() error {
-	b, err := bdf()
+	b, err := readBDF()
 	if err != nil {
 		return err
 	}
