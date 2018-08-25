@@ -39,14 +39,15 @@ const (
 
 func addHangul(img draw.Image) error {
 	for r := rune(0); r < 0xffff; r++ {
-		glyph := baekmuk.Glyph(r)
-		if glyph == nil {
+		g, ok := baekmuk.Glyph(r)
+		if !ok {
 			continue
 		}
-		dstX := (int(r) % 256) * glyphWidth
-		dstY := (int(r) / 256) * glyphHeight
-		dst := image.Rect(dstX, dstY, dstX+glyphWidth, dstY+glyphHeight)
-		draw.Draw(img, dst, glyph, dst.Bounds().Min, draw.Over)
+		dstX := (int(r)%256)*glyphWidth + g.X
+		dstY := (int(r)/256)*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)
+		dstR := image.Rect(dstX, dstY, dstX+g.Width, dstY+g.Height)
+		p := g.Bounds().Min
+		draw.Draw(img, dstR, &g, p, draw.Over)
 	}
 	return nil
 }

@@ -16,8 +16,6 @@ package baekmuk
 
 import (
 	"bufio"
-	"image"
-	"image/color"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -123,59 +121,23 @@ func isRuneToDraw(r rune) bool {
 	return false
 }
 
-const (
-	glyphNum  = 65536
-	glyphNumX = 256
-	srcW      = 12
-	srcH      = 12
-	dstW      = 12
-	dstH      = 16
-)
-
-var glyphs = image.NewRGBA(image.Rect(0, 0, glyphNumX*dstW, ((glyphNum-1)/glyphNumX+1)*dstH))
-
-func initGlyphs() error {
-	b, err := readBDF()
-	if err != nil {
-		return err
-	}
-
-	runeToPos := func(r rune) image.Point {
-		return image.Pt(int(r%glyphNumX)*dstW, int(r/glyphNumX)*dstH)
-	}
-
-	for r, g := range b {
-		pos := runeToPos(r)
-		for j := 0; j < len(g.Bitmap); j++ {
-			w := srcW
-			if w < len(g.Bitmap[j])*8 {
-				w = len(g.Bitmap[j]) * 8
-			}
-			for i := 0; i < w; i++ {
-				bits := g.Bitmap[j][i/8]
-				if (bits>>uint(7-i%8))&1 != 0 {
-					x := g.X
-					y := g.Y + g.Height - 12
-					glyphs.Set(pos.X+i+x, pos.Y+j-y, color.White)
-				}
-			}
-		}
-	}
-
-	return nil
-}
+var glyphs map[rune]*bdf.Glyph
 
 func init() {
-	if err := initGlyphs(); err != nil {
+	var err error
+	glyphs, err = readBDF()
+	if err != nil {
 		panic(err)
 	}
 }
 
-func Glyph(r rune) image.Image {
+func Glyph(r rune) (bdf.Glyph, bool) {
 	if !isRuneToDraw(r) {
-		return nil
+		return bdf.Glyph{}, false
 	}
-	x := (int(r) % glyphNumX) * dstW
-	y := (int(r) / glyphNumX) * dstH
-	return glyphs.SubImage(image.Rect(x, y, x+dstW, y+dstH))
+	g, ok := glyphs[r]
+	if !ok {
+		return bdf.Glyph{}, false
+	}
+	return *g, true
 }

@@ -17,6 +17,8 @@ package bdf
 import (
 	"bufio"
 	"fmt"
+	"image"
+	"image/color"
 	"io"
 	"strconv"
 	"strings"
@@ -29,6 +31,25 @@ type Glyph struct {
 	X        int
 	Y        int
 	Bitmap   [][]byte
+}
+
+func (g *Glyph) ColorModel() color.Model {
+	return color.AlphaModel
+}
+
+func (g *Glyph) Bounds() image.Rectangle {
+	return image.Rect(0, 0, g.Width, g.Height)
+}
+
+func (g *Glyph) At(x, y int) color.Color {
+	if x < 0 || y < 0 || x >= g.Width || y >= g.Height {
+		return color.Alpha{}
+	}
+	bits := g.Bitmap[y][x/8]
+	if (bits>>uint(7-x%8))&1 != 0 {
+		return color.Alpha{0xff}
+	}
+	return color.Alpha{}
 }
 
 func Parse(f io.Reader) ([]*Glyph, error) {
