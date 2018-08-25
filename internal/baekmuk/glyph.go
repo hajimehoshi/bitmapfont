@@ -15,80 +15,45 @@
 package baekmuk
 
 import (
-	"bufio"
 	"os"
 	"path/filepath"
 	"runtime"
-	"strconv"
-	"strings"
 
 	"github.com/hajimehoshi/bitmapfont/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/internal/uniconv"
 )
 
-func conv() (map[int]rune, error) {
-	_, current, _, _ := runtime.Caller(1)
-	dir := filepath.Dir(current)
-
-	f, err := os.Open(filepath.Join(dir, "KSX1001.TXT"))
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	m := map[int]rune{}
-
-	s := bufio.NewScanner(f)
-	for s.Scan() {
-		line := s.Text()
-		if idx := strings.Index(line, "#"); idx != -1 {
-			line = line[:idx]
-		}
-		line = strings.TrimSpace(line)
-		tokens := strings.Split(line, "  ")
-		if len(tokens) != 2 {
-			continue
-		}
-		ksx, err := strconv.ParseInt(tokens[0], 0, 32)
-		if err != nil {
-			return nil, err
-		}
-		uni, err := strconv.ParseInt(tokens[1], 0, 32)
-		if err != nil {
-			return nil, err
-		}
-		m[int(ksx)] = rune(uni)
-	}
-	if err := s.Err(); err != nil {
-		return nil, err
-	}
-
-	return m, nil
-}
-
 func readBDF() (map[rune]*bdf.Glyph, error) {
-	c, err := conv()
-	if err != nil {
-		return nil, err
-	}
-
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	f, err := os.Open(filepath.Join(dir, "gulim12.bdf"))
+	funi, err := os.Open(filepath.Join(dir, "KSX1001.TXT"))
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+	defer funi.Close()
+
+	c, err := uniconv.Parse(funi, "  ")
+	if err != nil {
+		return nil, err
+	}
+
+	fbdf, err := os.Open(filepath.Join(dir, "gulim12.bdf"))
+	if err != nil {
+		return nil, err
+	}
+	defer fbdf.Close()
 
 	m := map[rune]*bdf.Glyph{}
 
-	glyphs, err := bdf.Parse(f)
+	glyphs, err := bdf.Parse(fbdf)
 	if err != nil {
 		return nil, err
 	}
 	for _, g := range glyphs {
 		r, ok := c[g.Encoding]
 		if !ok {
+			// TODO: Treat this as an error?
 			continue
 		}
 		m[r] = g

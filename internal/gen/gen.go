@@ -21,14 +21,13 @@ import (
 	"flag"
 	"image"
 	"image/draw"
-	"image/png"
 	"os"
 
 	"github.com/hajimehoshi/bitmapfont/internal/baekmuk"
+	"github.com/hajimehoshi/bitmapfont/internal/mplus"
 )
 
 var (
-	flagInput  = flag.String("input", "", "input file")
 	flagOutput = flag.String("output", "", "output file")
 )
 
@@ -37,11 +36,14 @@ const (
 	glyphHeight = 16
 )
 
-func addHangul(img draw.Image) error {
+func addGlyphs(img draw.Image) error {
 	for r := rune(0); r < 0xffff; r++ {
-		g, ok := baekmuk.Glyph(r)
+		g, ok := mplus.Glyph(r)
 		if !ok {
-			continue
+			g, ok = baekmuk.Glyph(r)
+			if !ok {
+				continue
+			}
 		}
 		dstX := (int(r)%256)*glyphWidth + g.X
 		dstY := (int(r)/256)*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)
@@ -53,18 +55,8 @@ func addHangul(img draw.Image) error {
 }
 
 func run() error {
-	fin, err := os.Open(*flagInput)
-	if err != nil {
-		return err
-	}
-	defer fin.Close()
-
-	img, err := png.Decode(fin)
-	if err != nil {
-		return err
-	}
-
-	if err := addHangul(img.(*image.NRGBA)); err != nil {
+	img := image.NewRGBA(image.Rect(0, 0, glyphWidth*256, glyphHeight*256))
+	if err := addGlyphs(img); err != nil {
 		return err
 	}
 
