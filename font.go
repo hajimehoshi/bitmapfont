@@ -69,6 +69,12 @@ func runeWidth(r rune) int {
 	if r < 0x100 {
 		return charHalfWidth
 	}
+	if 0xff61 <= r && r <= 0xffdc {
+		return charHalfWidth
+	}
+	if 0xffe8 <= r && r <= 0xffee {
+		return charHalfWidth
+	}
 	return charFullWidth
 }
 

@@ -47,26 +47,62 @@ func jisToShiftJIS(index int) int {
 	return (int(upper) << 8) | int(lower)
 }
 
+var (
+	cp932ToRune    = map[int]rune{}
+	jisx0201ToRune = map[int]rune{}
+)
+
+func init() {
+	_, current, _, _ := runtime.Caller(0)
+	dir := filepath.Dir(current)
+
+	f, err := os.Open(filepath.Join(dir, "CP932.TXT"))
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	c, err := uniconv.Parse(f, "\t")
+	if err != nil {
+		panic(err)
+	}
+
+	cp932ToRune = c
+}
+
+func init() {
+	_, current, _, _ := runtime.Caller(0)
+	dir := filepath.Dir(current)
+
+	f, err := os.Open(filepath.Join(dir, "JIS0201.TXT"))
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	c, err := uniconv.Parse(f, "\t")
+	if err != nil {
+		panic(err)
+	}
+
+	jisx0201ToRune = c
+}
+
 func readBDF() (map[rune]*bdf.Glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
-
-	funi, err := os.Open(filepath.Join(dir, "CP932.TXT"))
-	if err != nil {
-		return nil, err
-	}
-	defer funi.Close()
-
-	c, err := uniconv.Parse(funi, "\t")
-	if err != nil {
-		return nil, err
-	}
 
 	fe, err := os.Open(filepath.Join(dir, "mplus_f12r.bdf"))
 	if err != nil {
 		return nil, err
 	}
 	defer fe.Close()
+
+	fej, err := os.Open(filepath.Join(dir, "mplus_f12r_jisx0201.bdf"))
+	if err != nil {
+		return nil, err
+	}
+	defer fej.Close()
 
 	fj, err := os.Open(filepath.Join(dir, "mplus_j12r.bdf"))
 	if err != nil {
@@ -81,6 +117,11 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 		return nil, err
 	}
 
+	glyphsej, err := bdf.Parse(fej)
+	if err != nil {
+		return nil, err
+	}
+
 	glyphsj, err := bdf.Parse(fj)
 	if err != nil {
 		return nil, err
@@ -88,6 +129,29 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 
 	for _, g := range glyphse {
 		m[rune(g.Encoding)] = g
+	}
+
+	for _, g := range glyphsej {
+		r, ok := jisx0201ToRune[g.Encoding]
+		if !ok {
+			if g.Encoding < 0x20 {
+				// Control chars
+				continue
+			}
+			if g.Encoding == 0x7f {
+				// DELETE
+				continue
+			}
+			if g.Encoding == 0xa0 {
+				// NO-BREAK SPACE
+				continue
+			}
+			return nil, fmt.Errorf("mplus: invalid char code 0x%x as JIS X 0201", g.Encoding)
+		}
+		if _, ok := m[r]; ok {
+			continue
+		}
+		m[r] = g
 	}
 
 	for _, g := range glyphsj {
@@ -98,7 +162,7 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 		} else {
 			s := jisToShiftJIS(g.Encoding)
 			ok := false
-			r, ok = c[s]
+			r, ok = cp932ToRune[s]
 			if !ok {
 				return nil, fmt.Errorf("mplus: invalid char code 0x%x (Shift_JIS: 0x%x)", g.Encoding, s)
 			}
