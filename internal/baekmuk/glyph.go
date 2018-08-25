@@ -86,30 +86,6 @@ func needsShift(r rune, g *bdf.Glyph) bool {
 	return true
 }
 
-func isRuneToDraw(r rune) bool {
-	// KOREAN STANDARD SYMBOL
-	if r == 0x327f {
-		return true
-	}
-	// CIRCLE HANGLE
-	if 0x3260 <= r && r <= 0x327e {
-		return true
-	}
-	// PARENTHESIZED HANGUL
-	if 0x3200 <= r && r <= 0x321f {
-		return true
-	}
-	// HANGUL LETTER (Hangul Compatible Jamo)
-	if 0x3130 <= r && r <= 0x318f {
-		return true
-	}
-	// HANGUL SYLLABLE
-	if 0xac00 <= r && r <= 0xd7af {
-		return true
-	}
-	return false
-}
-
 var glyphs map[rune]*bdf.Glyph
 
 func init() {
@@ -121,9 +97,6 @@ func init() {
 }
 
 func Glyph(r rune) (bdf.Glyph, bool) {
-	if !isRuneToDraw(r) {
-		return bdf.Glyph{}, false
-	}
 	g, ok := glyphs[r]
 	if !ok {
 		return bdf.Glyph{}, false
