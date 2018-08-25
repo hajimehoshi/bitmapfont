@@ -24,6 +24,7 @@ import (
 	"os"
 
 	"github.com/hajimehoshi/bitmapfont/internal/baekmuk"
+	"github.com/hajimehoshi/bitmapfont/internal/bdf"
 	"github.com/hajimehoshi/bitmapfont/internal/mplus"
 )
 
@@ -36,14 +37,58 @@ const (
 	glyphHeight = 16
 )
 
-func addGlyphs(img draw.Image) error {
-	for r := rune(0); r < 0xffff; r++ {
+type fontType int
+
+const (
+	fontTypeNone fontType = iota
+	fontTypeFixed
+	fontTypeMPlus
+	fontTypeBaekmuk
+)
+
+func getFontType(r rune) fontType {
+	if 0x2500 <= r && r <= 0x257f {
+		// Box Drawing
+		// M+ defines a part of box drawing glyphs.
+		// For consistency, use other font's glyphs instead.
+		return fontTypeBaekmuk
+	}
+	if _, ok := mplus.Glyph(r); ok {
+		return fontTypeMPlus
+	}
+	if _, ok := baekmuk.Glyph(r); ok {
+		return fontTypeBaekmuk
+	}
+	return fontTypeNone
+}
+
+func getGlyph(r rune) (bdf.Glyph, bool) {
+	switch getFontType(r) {
+	case fontTypeNone:
+		return bdf.Glyph{}, false
+	case fontTypeFixed:
+		// TODO: Implement
+	case fontTypeMPlus:
 		g, ok := mplus.Glyph(r)
+		if ok {
+			return g, true
+		}
+	case fontTypeBaekmuk:
+		g, ok := baekmuk.Glyph(r)
+		if ok {
+			return g, true
+		}
+	default:
+		panic("not reached")
+	}
+	return bdf.Glyph{}, false
+}
+
+func addGlyphs(img draw.Image) error {
+	for r := rune(0); r < 0x10000; r++ {
+		g, ok := getGlyph(r)
 		if !ok {
-			g, ok = baekmuk.Glyph(r)
-			if !ok {
-				continue
-			}
+			continue
 		}
 		dstX := (int(r)%256)*glyphWidth + g.X
 		dstY := (int(r)/256)*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)

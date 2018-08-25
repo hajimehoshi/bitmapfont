@@ -171,12 +171,6 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 			// Prefer f12r for Latin glyphs.
 			continue
 		}
-		if 0x2500 <= r && r <= 0x257f {
-			// Box Drawing
-			// M+ defines a part of box drawing glyphs.
-			// For consistency, use other font's glyphs instead.
-			continue
-		}
 
 		if !isValidGlyph(r, g) {
 			return nil, fmt.Errorf("mplus: invalid glyph for rune 0x%x", r)
