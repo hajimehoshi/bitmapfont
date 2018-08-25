@@ -15,6 +15,7 @@
 package baekmuk
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -53,8 +54,15 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 	for _, g := range glyphs {
 		r, ok := c[g.Encoding]
 		if !ok {
-			// TODO: Treat this as an error?
-			continue
+			if g.Encoding == 0x2266 {
+				// EURO SIGN
+				continue
+			}
+			if g.Encoding == 0x2267 {
+				// REGISTERED SIGN
+				continue
+			}
+			return nil, fmt.Errorf("baekmuk: invalid char code 0x%x", g.Encoding)
 		}
 
 		if needsShift(r, g) {
