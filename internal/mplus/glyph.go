@@ -107,6 +107,11 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 			// Prefer f12r for Latin glyphs.
 			continue
 		}
+
+		if !isValidGlyph(r, g) {
+			return nil, fmt.Errorf("mplus: invalid glyph for rune 0x%x", r)
+		}
+
 		m[r] = g
 	}
 
@@ -121,6 +126,33 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 	m[uniWaveDash] = m[uniFullwidthTilde]
 
 	return m, nil
+}
+
+func isValidGlyph(r rune, g *bdf.Glyph) bool {
+	// Box Drawing
+	if 0x2500 <= r && r <= 0x257f {
+		return true
+	}
+
+	// Check the edges
+	left := false
+	right := false
+	for i := 0; i < g.Height; i++ {
+		if _, _, _, a := g.At(0, i).RGBA(); a != 0 {
+			left = true
+			break
+		}
+	}
+	for i := 0; i < g.Height; i++ {
+		if _, _, _, a := g.At(g.Width-1, i).RGBA(); a != 0 {
+			right = true
+			break
+		}
+	}
+	if !left && right {
+		return false
+	}
+	return true
 }
 
 var glyphs map[rune]*bdf.Glyph

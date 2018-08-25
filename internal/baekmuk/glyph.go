@@ -56,10 +56,34 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 			// TODO: Treat this as an error?
 			continue
 		}
+
+		if needsShift(r, g) {
+			g.ShiftX = -1
+		}
+
 		m[r] = g
 	}
 
 	return m, nil
+}
+
+func needsShift(r rune, g *bdf.Glyph) bool {
+	// Basically glyphs needs to be shifted in X axis by 1px, but
+	// there are some exceptions:
+
+	// Box Drawing
+	if 0x2500 <= r && r <= 0x257f {
+		return false
+	}
+
+	// Check the left edge
+	for i := 0; i < g.Height; i++ {
+		if _, _, _, a := g.At(0, i).RGBA(); a != 0 {
+			return false
+		}
+	}
+
+	return true
 }
 
 func isRuneToDraw(r rune) bool {

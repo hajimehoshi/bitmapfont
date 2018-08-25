@@ -31,6 +31,8 @@ type Glyph struct {
 	X        int
 	Y        int
 	Bitmap   [][]byte
+
+	ShiftX int
 }
 
 func (g *Glyph) ColorModel() color.Model {
@@ -42,6 +44,7 @@ func (g *Glyph) Bounds() image.Rectangle {
 }
 
 func (g *Glyph) At(x, y int) color.Color {
+	x -= g.ShiftX
 	if x < 0 || y < 0 || x >= g.Width || y >= g.Height {
 		return color.Alpha{}
 	}
