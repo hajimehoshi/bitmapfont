@@ -44,14 +44,29 @@ func run() error {
 
 	width := 640
 
-	// https://en.wikisource.org/wiki/Universal_Declaration_of_Human_Rights
-	text := `en: All human beings are born free and equal in dignity and rights.
-de: Alle Menschen sind frei und gleich an Würde und Rechten geboren.
-es: Todos los seres humanos nacen libres e iguales en dignidad y derechos y,
-fr: Tous les êtres humains naissent libres et égaux en dignité et en droits.
-ja: すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
-ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
-pt: Todos os seres humanos nascem livres e iguais em dignidade e em direitos.
+	// https://www.unicode.org/udhr/
+	// https://omniglot.com/udhr/
+	text := `en:  All human beings are born free and equal in dignity and rights.
+ang: Ealle fīras sind boren frēo ond geefenlican in ār ond riht.
+de:  Alle Menschen sind frei und gleich an Würde und Rechten geboren.
+el:  'Ολοι οι άνθρωποι γεννιούνται ελεύθεροι και ίσοι στην αξιοπρέπεια και τα δικαιώματα.
+es:  Todos los seres humanos nacen libres e iguales en dignidad y derechos y,
+eo:  Ĉiuj homoj estas denaske liberaj kaj egalaj laŭ digno kaj rajtoj.
+fr:  Tous les êtres humains naissent libres et égaux en dignité et en droits.
+got: ᚨᛚᛚᚨᛁ ᛗᚨᚾᚾᚨ ᚠᚱᛖᛁᚺᚨᛚᛋ ᛃᚨᚺ ᛋᚨᛗᚨᛚᛖᛁᚲᛟ ᛁᚾ ᚹᚨᛁᚱᚦᛁᛞᚨᛁ ᛃᚨᚺ ᚱᚨᛁᚺᛏᛖᛁᛋ ᚹᚨᚢᚱᚦᚨᚾᛋ.
+hy:  Բոլոր մարդիկ ծնվում են ազատ ու հավասար՝ իրենց արժանապատվությամբ և իրավունքներով:
+it:  Tutti gli esseri umani nascono liberi ed eguali in dignità e diritti.
+ja:  すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。
+ka:  ყველა ადამიანი იბადება თავისუფალი და თანასწორი თავისი ღირსებითა და უფლებებით.
+ko:  모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
+mn:  Хүн бүр төрж мэндлэхэд эрх чөлөөтэй, адилхан нэр төртэй, ижил эрхтэй байдаг.
+pl:  Wszyscy ludzie rodzą się wolni i równi pod względem swej godności i swych praw.
+pt:  Todos os seres humanos nascem livres e iguais em dignidade e em direitos.
+ru:  Все люди рождаются свободными и равными в своем достоинстве и правах.
+sw:  Watu wote wamezaliwa huru, hadhi na haki zao ni sawa.
+tr:  Bütün insanlar hür, haysiyet ve haklar bakımından eşit doğarlar.
+uk:  Всі люди народжуються вільними і рівними у своїй гідності та правах.
+vi:  Tất cả mọi người sinh ra đều được tự do và bình đẳng về nhân phẩm và quyền.
 `
 	height := 16*len(strings.Split(strings.TrimSpace(text), "\n")) + 8
 	if *flagTest {

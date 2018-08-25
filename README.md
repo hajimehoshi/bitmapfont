@@ -6,8 +6,9 @@
 
 Package bitmapfont offers a font.Face value of some bitmap fonts.
 
-   * [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
    * [Baekmuk Gulim](http://kldp.net/baekmuk/) (Baekmuk License)
+   * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
+   * [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
 
 There is one font face with glyph size 6x13 for halfwidth, and 12x13 for fullwidth so far.
 

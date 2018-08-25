@@ -14,8 +14,9 @@
 
 // Package bitmapfont offers a font.Face value of some bitmap fonts.
 //
-//   * [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
 //   * [Baekmuk Gulim](http://kldp.net/baekmuk/) (Baekmuk License)
+//   * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
+//   * [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
 package bitmapfont
 
 import (
@@ -27,6 +28,8 @@ import (
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
+
+	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 )
 
 var imageData *binaryImage
@@ -107,7 +110,9 @@ const (
 )
 
 func runeWidth(r rune) int {
-	if r < 0x100 {
+	// TODO: This condition depends on the fact that Europian glyphs are from misc-fixed.
+	// Refactor this.
+	if unicode.IsEuropian(r) {
 		return charHalfWidth
 	}
 	if 0xff61 <= r && r <= 0xffdc {

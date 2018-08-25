@@ -26,6 +26,7 @@ import (
 
 	"github.com/hajimehoshi/bitmapfont/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/internal/fixed"
 	"github.com/hajimehoshi/bitmapfont/internal/mplus"
 )
 
@@ -54,6 +55,13 @@ func getFontType(r rune) fontType {
 		// For consistency, use other font's glyphs instead.
 		return fontTypeBaekmuk
 	}
+	if 0xff65 <= r && r <= 0xff9f {
+		// Halfwidth Katakana
+		return fontTypeMPlus
+	}
+	if _, ok := fixed.Glyph(r); ok {
+		return fontTypeFixed
+	}
 	if _, ok := mplus.Glyph(r); ok {
 		return fontTypeMPlus
 	}
@@ -68,7 +76,10 @@ func getGlyph(r rune) (bdf.Glyph, bool) {
 	case fontTypeNone:
 		return bdf.Glyph{}, false
 	case fontTypeFixed:
-		// TODO: Implement
+		g, ok := fixed.Glyph(r)
+		if ok {
+			return g, true
+		}
 	case fontTypeMPlus:
 		g, ok := mplus.Glyph(r)
 		if ok {
@@ -91,6 +102,7 @@ func addGlyphs(img draw.Image) error {
 		if !ok {
 			continue
 		}
+
 		dstX := (int(r)%256)*glyphWidth + g.X
 		dstY := (int(r)/256)*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)
 		dstR := image.Rect(dstX, dstY, dstX+g.Width, dstY+g.Height)
