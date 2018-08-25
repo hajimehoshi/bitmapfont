@@ -53,12 +53,17 @@ ja: すべての人間は、生れながらにして自由であり、かつ、�
 ko: 모든 인간은 태어날 때부터 자유로우며 그 존엄과 권리에 있어 동등하다.
 `
 	if *flagTest {
-		width = 12*256 + 32
-		height = 16*256 + 32
+		width = 12*256 + 16
+		height = 16*256 + 16
 		text = ""
 		for i := 0; i < 256; i++ {
 			for j := 0; j < 256; j++ {
-				text += string(rune(i*256 + j))
+				r := rune(i*256 + j)
+				if r == '\n' {
+					text += " "
+					continue
+				}
+				text += string(r)
 			}
 			text += "\n"
 		}
