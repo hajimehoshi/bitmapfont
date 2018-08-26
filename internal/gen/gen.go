@@ -108,11 +108,14 @@ func run() error {
 
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
-	as := make([]byte, w*h)
+	as := make([]byte, w*h/8)
 	for j := 0; j < h; j++ {
 		for i := 0; i < w; i++ {
 			a := img.At(i, j).(color.Alpha).A
-			as[w*j+i] = a
+			idx := w*j + i
+			if a != 0 {
+				as[idx/8] |= 1 << uint(7-idx%8)
+			}
 		}
 	}
 

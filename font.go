@@ -22,18 +22,58 @@ import (
 	"bytes"
 	"compress/gzip"
 	"image"
+	"image/color"
 	"io/ioutil"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
 
-var imageData *image.Alpha
+var imageData *binaryImage
 
 const (
 	imageWidth  = 3072
 	imageHeight = 4096
 )
+
+type binaryImage struct {
+	bits   []byte
+	width  int
+	height int
+	bounds image.Rectangle
+}
+
+func (b *binaryImage) At(i, j int) color.Color {
+	if i < b.bounds.Min.X || j < b.bounds.Min.Y || i >= b.bounds.Max.X || j >= b.bounds.Max.Y {
+		return color.Alpha{0}
+	}
+	idx := b.width*j + i
+	if (b.bits[idx/8]>>uint(7-idx%8))&1 != 0 {
+		return color.Alpha{0xff}
+	}
+	return color.Alpha{0}
+}
+
+func (b *binaryImage) ColorModel() color.Model {
+	return color.AlphaModel
+}
+
+func (b *binaryImage) Bounds() image.Rectangle {
+	return b.bounds
+}
+
+func (b *binaryImage) SubImage(r image.Rectangle) image.Image {
+	bounds := r.Intersect(b.bounds)
+	if bounds.Empty() {
+		return &binaryImage{}
+	}
+	return &binaryImage{
+		bits:   b.bits,
+		width:  b.width,
+		height: b.height,
+		bounds: bounds,
+	}
+}
 
 func init() {
 	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha))
@@ -42,15 +82,16 @@ func init() {
 	}
 	defer s.Close()
 
-	pix, err := ioutil.ReadAll(s)
+	bits, err := ioutil.ReadAll(s)
 	if err != nil {
 		panic(err)
 	}
 
-	imageData = &image.Alpha{
-		Pix:    pix,
-		Stride: imageWidth,
-		Rect:   image.Rect(0, 0, imageWidth, imageHeight),
+	imageData = &binaryImage{
+		bits:   bits,
+		width:  imageWidth,
+		height: imageHeight,
+		bounds: image.Rect(0, 0, imageWidth, imageHeight),
 	}
 }
 
