@@ -20,6 +20,7 @@ import (
 	"compress/gzip"
 	"flag"
 	"image"
+	"image/color"
 	"image/draw"
 	"os"
 
@@ -100,21 +101,18 @@ func addGlyphs(img draw.Image) error {
 }
 
 func run() error {
-	img := image.NewRGBA(image.Rect(0, 0, glyphWidth*256, glyphHeight*256))
+	img := image.NewAlpha(image.Rect(0, 0, glyphWidth*256, glyphHeight*256))
 	if err := addGlyphs(img); err != nil {
 		return err
 	}
 
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
-	rgba := make([]byte, w*h*4)
+	as := make([]byte, w*h)
 	for j := 0; j < h; j++ {
 		for i := 0; i < w; i++ {
-			r, g, b, a := img.At(i, j).RGBA()
-			rgba[4*(w*j+i)] = byte(r >> 8)
-			rgba[4*(w*j+i)+1] = byte(g >> 8)
-			rgba[4*(w*j+i)+2] = byte(b >> 8)
-			rgba[4*(w*j+i)+3] = byte(a >> 8)
+			a := img.At(i, j).(color.Alpha).A
+			as[w*j+i] = a
 		}
 	}
 
@@ -130,7 +128,7 @@ func run() error {
 	}
 	defer cw.Close()
 
-	if _, err := cw.Write(rgba); err != nil {
+	if _, err := cw.Write(as); err != nil {
 		return err
 	}
 	return nil

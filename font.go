@@ -28,7 +28,7 @@ import (
 	"golang.org/x/image/math/fixed"
 )
 
-var imageData *image.RGBA
+var imageData *image.Alpha
 
 const (
 	imageWidth  = 3072
@@ -36,7 +36,7 @@ const (
 )
 
 func init() {
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontRGBA))
+	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha))
 	if err != nil {
 		panic(err)
 	}
@@ -47,9 +47,9 @@ func init() {
 		panic(err)
 	}
 
-	imageData = &image.RGBA{
+	imageData = &image.Alpha{
 		Pix:    pix,
-		Stride: 4 * imageWidth,
+		Stride: imageWidth,
 		Rect:   image.Rect(0, 0, imageWidth, imageHeight),
 	}
 }
