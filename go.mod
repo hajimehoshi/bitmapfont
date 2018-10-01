@@ -1,3 +1,3 @@
 module github.com/hajimehoshi/bitmapfont
 
-require golang.org/x/image v0.0.0-20180708004352-c73c2afc3b81
+require golang.org/x/image v0.0.0-20180926015637-991ec62608f3
