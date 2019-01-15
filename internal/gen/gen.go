@@ -96,27 +96,27 @@ func getGlyph(r rune) (bdf.Glyph, bool) {
 	return bdf.Glyph{}, false
 }
 
-func addGlyphs(img draw.Image) error {
-	for r := rune(0); r < 0x10000; r++ {
-		g, ok := getGlyph(r)
-		if !ok {
-			continue
-		}
+func addGlyphs(img draw.Image) {
+	for j := 0; j < 0x100; j++ {
+		for i := 0; i < 0x100; i++ {
+			r := rune(i + j*0x100)
+			g, ok := getGlyph(r)
+			if !ok {
+				continue
+			}
 
-		dstX := (int(r)%256)*glyphWidth + g.X
-		dstY := (int(r)/256)*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)
-		dstR := image.Rect(dstX, dstY, dstX+g.Width, dstY+g.Height)
-		p := g.Bounds().Min
-		draw.Draw(img, dstR, &g, p, draw.Over)
+			dstX := i*glyphWidth + g.X
+			dstY := j*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)
+			dstR := image.Rect(dstX, dstY, dstX+g.Width, dstY+g.Height)
+			p := g.Bounds().Min
+			draw.Draw(img, dstR, &g, p, draw.Over)
+		}
 	}
-	return nil
 }
 
 func run() error {
 	img := image.NewAlpha(image.Rect(0, 0, glyphWidth*256, glyphHeight*256))
-	if err := addGlyphs(img); err != nil {
-		return err
-	}
+	addGlyphs(img)
 
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
