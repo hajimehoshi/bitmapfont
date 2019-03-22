@@ -32,8 +32,6 @@ import (
 	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 )
 
-var imageData *binaryImage
-
 const (
 	imageWidth  = 3072
 	imageHeight = 4096
@@ -90,11 +88,13 @@ func init() {
 		panic(err)
 	}
 
-	imageData = &binaryImage{
-		bits:   bits,
-		width:  imageWidth,
-		height: imageHeight,
-		bounds: image.Rect(0, 0, imageWidth, imageHeight),
+	Gothic12r = &bitmapFont{
+		imageData: &binaryImage{
+			bits:   bits,
+			width:  imageWidth,
+			height: imageHeight,
+			bounds: image.Rect(0, 0, imageWidth, imageHeight),
+		},
 	}
 }
 
@@ -125,10 +125,11 @@ func runeWidth(r rune) int {
 }
 
 // Gothic12r is a font.Face of the bitmap font (12px regular).
-var Gothic12r font.Face = &bitmapFont{}
+var Gothic12r font.Face
 
 type bitmapFont struct {
-	scale int
+	scale     int
+	imageData *binaryImage
 }
 
 func (m *bitmapFont) Close() error {
@@ -147,7 +148,7 @@ func (m *bitmapFont) Glyph(dot fixed.Point26_6, r rune) (dr image.Rectangle, mas
 
 	mx := (int(r) % charXNum) * charFullWidth
 	my := (int(r) / charXNum) * charHeight
-	mask = imageData.SubImage(image.Rect(mx, my, mx+rw, my+charHeight))
+	mask = m.imageData.SubImage(image.Rect(mx, my, mx+rw, my+charHeight))
 	maskp = image.Pt(mx, my)
 	advance = fixed.I(runeWidth(r))
 	ok = true
