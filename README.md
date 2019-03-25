@@ -45,3 +45,13 @@ Unlimited permission is granted to use, copy, and distribute it, with
 or without modification, either commercially and noncommercially.
 THESE FONTS ARE PROVIDED "AS IS" WITHOUT WARRANTY.
 ```
+
+## How to use Chinese glyphs
+
+Chinese glyphs are not supported by default due to the license issue. By putting the BDF file ([Wen Quan Yi](http://wenq.org/wqy2/index.cgi?action=browse&id=Home&lang=en)), you can generate your own Chinese glyph sets.
+
+ 1. Get `wenquanyi_9pt.bdf` at [Wen Quan Yi](http://wenq.org/wqy2/index.cgi?action=browse&id=Home&lang=en) website.
+ 2. Put `wenquanyi_9pt.bdf` at `internals/wqi`
+ 3. Run `go generate -tags=zh`
+
+Then `GopthicZh12r` will be defined in this package with `zh` build tag.

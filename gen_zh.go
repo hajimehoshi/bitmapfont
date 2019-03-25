@@ -24,16 +24,12 @@ import (
 	"image/draw"
 	"os"
 
-	"github.com/hajimehoshi/bitmapfont/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/internal/bdf"
-	"github.com/hajimehoshi/bitmapfont/internal/fixed"
-	"github.com/hajimehoshi/bitmapfont/internal/mplus"
 	"github.com/hajimehoshi/bitmapfont/internal/wqi"
 )
 
 var (
 	flagOutput = flag.String("output", "", "output file")
-	flagWQI    = flag.Bool("wqi", false, "use the Wen Quan Yi glyphs")
 )
 
 const (
@@ -52,27 +48,8 @@ const (
 )
 
 func getFontType(r rune) fontType {
-	if *flagWQI && wqi.Includes(r) {
+	if wqi.Includes(r) {
 		return fontTypeWQI
-	}
-	if 0x2500 <= r && r <= 0x257f {
-		// Box Drawing
-		// M+ defines a part of box drawing glyphs.
-		// For consistency, use other font's glyphs instead.
-		return fontTypeBaekmuk
-	}
-	if 0xff65 <= r && r <= 0xff9f {
-		// Halfwidth Katakana
-		return fontTypeMPlus
-	}
-	if _, ok := fixed.Glyph(r); ok {
-		return fontTypeFixed
-	}
-	if _, ok := mplus.Glyph(r); ok {
-		return fontTypeMPlus
-	}
-	if _, ok := baekmuk.Glyph(r); ok {
-		return fontTypeBaekmuk
 	}
 	return fontTypeNone
 }
@@ -81,21 +58,6 @@ func getGlyph(r rune) (bdf.Glyph, bool) {
 	switch getFontType(r) {
 	case fontTypeNone:
 		return bdf.Glyph{}, false
-	case fontTypeFixed:
-		g, ok := fixed.Glyph(r)
-		if ok {
-			return g, true
-		}
-	case fontTypeMPlus:
-		g, ok := mplus.Glyph(r)
-		if ok {
-			return g, true
-		}
-	case fontTypeBaekmuk:
-		g, ok := baekmuk.Glyph(r)
-		if ok {
-			return g, true
-		}
 	case fontTypeWQI:
 		g, ok := wqi.Glyph(r)
 		if ok {
