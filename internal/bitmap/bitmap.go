@@ -174,7 +174,3 @@ func (f *Face) Metrics() font.Metrics {
 		Descent: fixed.I(f.charHeight()) - f.dotY,
 	}
 }
-
-func (f *Face) Dot() (x, y fixed.Int26_6) {
-	return f.dotX, f.dotY
-}

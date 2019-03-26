@@ -53,10 +53,5 @@ func init() {
 	Gothic12r = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY))
 }
 
-type Face interface {
-	font.Face
-	Dot() (x, y fixed.Int26_6)
-}
-
 // Gothic12r is a font.Face of the bitmap font (12px regular).
-var Gothic12r Face
+var Gothic12r font.Face
