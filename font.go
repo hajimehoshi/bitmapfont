@@ -25,19 +25,20 @@ import (
 	"io/ioutil"
 
 	"golang.org/x/image/font"
+	"golang.org/x/image/math/fixed"
 
 	"github.com/hajimehoshi/bitmapfont/internal/bitmap"
 )
 
-const (
-	imageWidth  = 3072
-	imageHeight = 4096
-
-	dotX = 4
-	dotY = 12
-)
-
 func init() {
+	const (
+		imageWidth  = 3072
+		imageHeight = 4096
+
+		dotX = 4
+		dotY = 12
+	)
+
 	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha))
 	if err != nil {
 		panic(err)
@@ -49,8 +50,13 @@ func init() {
 		panic(err)
 	}
 
-	Gothic12r = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), dotX, dotY)
+	Gothic12r = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY))
+}
+
+type Face interface {
+	font.Face
+	Dot() (x, y fixed.Int26_6)
 }
 
 // Gothic12r is a font.Face of the bitmap font (12px regular).
-var Gothic12r font.Face
+var Gothic12r Face

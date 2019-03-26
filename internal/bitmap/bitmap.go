@@ -79,14 +79,11 @@ const (
 
 type Face struct {
 	image *BinaryImage
-	dotX  int
-	dotY  int
-
-	replaces map[rune]rune
-	offsets  map[rune]struct{ X, Y int }
+	dotX  fixed.Int26_6
+	dotY  fixed.Int26_6
 }
 
-func NewFace(image *BinaryImage, dotX, dotY int) *Face {
+func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6) *Face {
 	return &Face{
 		image: image,
 		dotX:  dotX,
@@ -121,20 +118,6 @@ func (f *Face) charHeight() int {
 	return f.image.Bounds().Dy() / charYNum
 }
 
-func (f *Face) AddReplace(from, to rune) {
-	if f.replaces == nil {
-		f.replaces = map[rune]rune{}
-	}
-	f.replaces[from] = to
-}
-
-func (f *Face) AddOffset(r rune, x, y int) {
-	if f.offsets == nil {
-		f.offsets = map[rune]struct{ X, Y int }{}
-	}
-	f.offsets[r] = struct{ X, Y int }{x, y}
-}
-
 func (f *Face) Close() error {
 	return nil
 }
@@ -143,17 +126,10 @@ func (f *Face) Glyph(dot fixed.Point26_6, r rune) (dr image.Rectangle, mask imag
 	if r >= 0x10000 {
 		return
 	}
-	if newR, ok := f.replaces[r]; ok {
-		r = newR
-	}
 
 	rw := f.runeWidth(r)
-	dx := dot.X.Floor() - f.dotX
-	dy := dot.Y.Floor() - f.dotY
-	if o, ok := f.offsets[r]; ok {
-		dx += o.X
-		dy += o.Y
-	}
+	dx := (dot.X - f.dotX).Floor()
+	dy := (dot.Y - f.dotY).Floor()
 	dr = image.Rect(dx, dy, dx+rw, dy+f.charHeight())
 
 	mx := (int(r) % charXNum) * f.charFullWidth()
@@ -169,7 +145,10 @@ func (f *Face) GlyphBounds(r rune) (bounds fixed.Rectangle26_6, advance fixed.In
 	if r >= 0x10000 {
 		return
 	}
-	bounds = fixed.R(-f.dotX, -f.dotY, -f.dotX+f.runeWidth(r), -f.dotY+f.charHeight())
+	bounds = fixed.Rectangle26_6{
+		Min: fixed.Point26_6{-f.dotX, -f.dotY},
+		Max: fixed.Point26_6{-f.dotX + fixed.I(f.runeWidth(r)), -f.dotY + fixed.I(f.charHeight())},
+	}
 	advance = fixed.I(f.runeWidth(r))
 	ok = true
 	return
@@ -191,7 +170,11 @@ func (f *Face) Kern(r0, r1 rune) fixed.Int26_6 {
 func (f *Face) Metrics() font.Metrics {
 	return font.Metrics{
 		Height:  fixed.I(f.charHeight()),
-		Ascent:  fixed.I(f.dotY),
-		Descent: fixed.I(f.charHeight() - f.dotY),
+		Ascent:  f.dotY,
+		Descent: fixed.I(f.charHeight()) - f.dotY,
 	}
+}
+
+func (f *Face) Dot() (x, y fixed.Int26_6) {
+	return f.dotX, f.dotY
 }
