@@ -14,9 +14,9 @@
 
 // Package bitmapfont offers a font.Face value of some bitmap fonts.
 //
-//   * [Baekmuk Gulim](http://kldp.net/baekmuk/) (Baekmuk License)
+//   * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
 //   * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
-//   * [M+ Bitmap Font](http://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
+//   * [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
 package bitmapfont
 
 import (
