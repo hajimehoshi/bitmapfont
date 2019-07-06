@@ -66,14 +66,28 @@ func getFontType(r rune, size int) fontType {
 		// Halfwidth Katakana
 		return fontTypeMPlus
 	}
-	if _, ok := fixed.Glyph(r, size); ok {
-		return fontTypeFixed
-	}
-	if _, ok := mplus.Glyph(r, size); ok {
-		return fontTypeMPlus
-	}
-	if _, ok := baekmuk.Glyph(r, size); ok {
-		return fontTypeBaekmuk
+	switch size {
+	case 10:
+		// Prefer Latin alphabets of M+ for quality.
+		if _, ok := mplus.Glyph(r, size); ok {
+			return fontTypeMPlus
+		}
+		if _, ok := fixed.Glyph(r, size); ok {
+			return fontTypeFixed
+		}
+		if _, ok := baekmuk.Glyph(r, size); ok {
+			return fontTypeBaekmuk
+		}
+	case 12:
+		if _, ok := fixed.Glyph(r, size); ok {
+			return fontTypeFixed
+		}
+		if _, ok := mplus.Glyph(r, size); ok {
+			return fontTypeMPlus
+		}
+		if _, ok := baekmuk.Glyph(r, size); ok {
+			return fontTypeBaekmuk
+		}
 	}
 	return fontTypeNone
 }

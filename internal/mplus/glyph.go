@@ -21,6 +21,7 @@ import (
 	"runtime"
 
 	"github.com/hajimehoshi/bitmapfont/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 	"github.com/hajimehoshi/bitmapfont/internal/uniconv"
 )
 
@@ -92,15 +93,18 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	fe, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_f%dr.bdf", size)))
-	if err != nil {
-		return nil, err
-	}
-	defer fe.Close()
+	var glyphse []*bdf.Glyph
+	if size == 12 {
+		fe, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_f%dr.bdf", size)))
+		if err != nil {
+			return nil, err
+		}
+		defer fe.Close()
 
-	glyphse, err := bdf.Parse(fe)
-	if err != nil {
-		return nil, err
+		glyphse, err = bdf.Parse(fe)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// For Hankaku-kana glyphs
@@ -197,6 +201,13 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		return nil, fmt.Errorf("mplus: FULLWIDTH TILDE (0x%x) not found", uniFullwidthTilde)
 	}
 	m[uniWaveDash] = m[uniFullwidthTilde]
+
+	// Skip Greek and Cyrillic glyphs. They are wide widths.
+	for r := range m {
+		if unicode.IsGreek(r) || unicode.IsCyrillic(r) {
+			delete(m, r)
+		}
+	}
 
 	return m, nil
 }
