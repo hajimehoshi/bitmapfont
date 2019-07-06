@@ -18,6 +18,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -37,11 +38,6 @@ var (
 )
 
 func run() error {
-	const (
-		ox = 16
-		oy = 16
-	)
-
 	width := 640
 
 	// https://www.unicode.org/udhr/
@@ -68,57 +64,103 @@ tr:  Bütün insanlar hür, haysiyet ve haklar bakımından eşit doğarlar.
 uk:  Всі люди народжуються вільними і рівними у своїй гідності та правах.
 vi:  Tất cả mọi người sinh ra đều được tự do và bình đẳng về nhân phẩm và quyền.
 `
-	height := 16*len(strings.Split(strings.TrimSpace(text), "\n")) + 8
-	if *flagTest {
-		width = 12*256 + 16
-		height = 16*256 + 16
-		text = ""
-		for i := 0; i < 256; i++ {
-			for j := 0; j < 256; j++ {
-				r := rune(i*256 + j)
-				if r == '\n' {
-					text += " "
-					continue
-				}
-				text += string(r)
-			}
-			text += "\n"
+
+	const (
+		offsetX = 8
+		offsetY = 8
+	)
+
+	for _, s := range []int{10, 12} {
+		var (
+			dotX        int
+			dotY        int
+			glyphWidth  int
+			glyphHeight int
+		)
+		switch s {
+		case 10:
+			dotX = 3
+			dotY = 9
+			glyphWidth = 10
+			glyphHeight = 12
+		case 12:
+			dotX = 4
+			dotY = 12
+			glyphWidth = 12
+			glyphHeight = 16
 		}
-	}
 
-	dst := image.NewRGBA(image.Rect(0, 0, width, height))
-	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
+		height := glyphHeight*len(strings.Split(strings.TrimSpace(text), "\n")) + offsetX*2
+		if *flagTest {
+			width = glyphWidth*256 + offsetX*2
+			height = glyphHeight*256 + offsetY*2
+			text = ""
+			for i := 0; i < 256; i++ {
+				for j := 0; j < 256; j++ {
+					r := rune(i*256 + j)
+					if r == '\n' {
+						text += " "
+						continue
+					}
+					text += string(r)
+				}
+				text += "\n"
+			}
+		}
 
-	f := bitmapfont.Gothic12r
-	d := font.Drawer{
-		Dst:  dst,
-		Src:  image.NewUniform(color.Black),
-		Face: f,
-		Dot:  fixed.P(ox, oy),
-	}
+		dst := image.NewRGBA(image.Rect(0, 0, width, height))
+		draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
+		if *flagTest {
+			gray := color.RGBA{0xcc, 0xcc, 0xcc, 0xff}
+			for j := 0; j < 256; j++ {
+				for i := 0; i < 256; i++ {
+					if (i+j)%2 == 0 {
+						continue
+					}
+					x := i*glyphWidth + offsetX
+					y := j*glyphHeight + offsetY
+					draw.Draw(dst, image.Rect(x, y, x+glyphWidth, y+glyphHeight), image.NewUniform(gray), image.ZP, draw.Src)
+				}
+			}
+		}
 
-	for _, l := range strings.Split(text, "\n") {
-		d.DrawString(l)
-		d.Dot.X = fixed.I(ox)
-		d.Dot.Y += f.Metrics().Height
-	}
+		var f font.Face
+		switch s {
+		case 10:
+			f = bitmapfont.Gothic10r
+		case 12:
+			f = bitmapfont.Gothic12r
+		}
+		d := font.Drawer{
+			Dst:  dst,
+			Src:  image.NewUniform(color.Black),
+			Face: f,
+			Dot:  fixed.P(dotX+offsetX, dotY+offsetY),
+		}
 
-	path := "example.png"
-	if *flagTest {
-		path = "example_test.png"
-	}
-	fout, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer fout.Close()
+		for _, l := range strings.Split(text, "\n") {
+			d.DrawString(l)
+			d.Dot.X = fixed.I(dotX + offsetX)
+			d.Dot.Y += f.Metrics().Height
+		}
 
-	if err := png.Encode(fout, d.Dst); err != nil {
-		return err
-	}
+		path := fmt.Sprintf("example_%d.png", s)
+		if *flagTest {
+			path = fmt.Sprintf("example_%d_test.png", s)
+		}
+		fout, err := os.Create(path)
+		if err != nil {
+			return err
+		}
+		defer fout.Close()
 
-	if err := browser.OpenFile(path); err != nil {
-		return err
+		if err := png.Encode(fout, d.Dst); err != nil {
+			return err
+		}
+
+		if err := browser.OpenFile(path); err != nil {
+			return err
+		}
 	}
 	return nil
 }

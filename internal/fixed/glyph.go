@@ -24,11 +24,21 @@ import (
 	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 )
 
-func readBDF() (map[rune]*bdf.Glyph, error) {
+func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	fbdf, err := os.Open(filepath.Join(dir, "6x13.bdf"))
+	var filename string
+	switch size {
+	case 10:
+		filename = "5x8.bdf"
+	case 12:
+		filename = "6x13.bdf"
+	default:
+		panic("not reached")
+	}
+
+	fbdf, err := os.Open(filepath.Join(dir, filename))
 	if err != nil {
 		return nil, err
 	}
@@ -113,18 +123,26 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 	return m, nil
 }
 
-var glyphs map[rune]*bdf.Glyph
+var glyphs map[int]map[rune]*bdf.Glyph
 
 func init() {
-	var err error
-	glyphs, err = readBDF()
+	glyphs10r, err := readBDF(10)
 	if err != nil {
 		panic(err)
 	}
+	glyphs12r, err := readBDF(12)
+	if err != nil {
+		panic(err)
+	}
+
+	glyphs = map[int]map[rune]*bdf.Glyph{
+		10: glyphs10r,
+		12: glyphs12r,
+	}
 }
 
-func Glyph(r rune) (bdf.Glyph, bool) {
-	g, ok := glyphs[r]
+func Glyph(r rune, size int) (bdf.Glyph, bool) {
+	g, ok := glyphs[size][r]
 	if !ok {
 		return bdf.Glyph{}, false
 	}

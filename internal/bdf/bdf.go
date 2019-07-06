@@ -33,6 +33,7 @@ type Glyph struct {
 	Bitmap   [][]byte
 
 	ShiftX int
+	ShiftY int
 }
 
 func (g *Glyph) ColorModel() color.Model {
@@ -45,6 +46,7 @@ func (g *Glyph) Bounds() image.Rectangle {
 
 func (g *Glyph) At(x, y int) color.Color {
 	x -= g.ShiftX
+	y -= g.ShiftY
 	if x < 0 || y < 0 || x >= g.Width || y >= g.Height {
 		return color.Alpha{}
 	}
@@ -105,9 +107,6 @@ func Parse(f io.Reader) ([]*Glyph, error) {
 			continue
 		}
 		if strings.HasPrefix(line, "ENDCHAR") {
-			if len(current.Bitmap) == 0 {
-				return nil, fmt.Errorf("bdf: no glyph for %d", current.Encoding)
-			}
 			glyphs = append(glyphs, current)
 			current = nil
 			continue

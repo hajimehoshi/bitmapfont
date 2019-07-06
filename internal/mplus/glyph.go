@@ -88,44 +88,49 @@ func init() {
 	jisx0201ToRune = c
 }
 
-func readBDF() (map[rune]*bdf.Glyph, error) {
+func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	fe, err := os.Open(filepath.Join(dir, "mplus_f12r.bdf"))
+	fe, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_f%dr.bdf", size)))
 	if err != nil {
 		return nil, err
 	}
 	defer fe.Close()
-
-	fej, err := os.Open(filepath.Join(dir, "mplus_f12r_jisx0201.bdf"))
-	if err != nil {
-		return nil, err
-	}
-	defer fej.Close()
-
-	fj, err := os.Open(filepath.Join(dir, "mplus_j12r.bdf"))
-	if err != nil {
-		return nil, err
-	}
-	defer fj.Close()
-
-	m := map[rune]*bdf.Glyph{}
 
 	glyphse, err := bdf.Parse(fe)
 	if err != nil {
 		return nil, err
 	}
 
+	// For Hankaku-kana glyphs
+	prefix := "f"
+	if size == 10 {
+		prefix = "h"
+	}
+	fej, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_%s%dr_jisx0201.bdf", prefix, size)))
+	if err != nil {
+		return nil, err
+	}
+	defer fej.Close()
+
 	glyphsej, err := bdf.Parse(fej)
 	if err != nil {
 		return nil, err
 	}
 
+	fj, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_j%dr.bdf", size)))
+	if err != nil {
+		return nil, err
+	}
+	defer fj.Close()
+
 	glyphsj, err := bdf.Parse(fj)
 	if err != nil {
 		return nil, err
 	}
+
+	m := map[rune]*bdf.Glyph{}
 
 	for _, g := range glyphse {
 		m[rune(g.Encoding)] = g
@@ -172,9 +177,11 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 			continue
 		}
 
-		if !isValidGlyph(r, g) {
+		if size == 12 && !isValidGlyph(r, g) {
 			return nil, fmt.Errorf("mplus: invalid glyph for rune 0x%x", r)
 		}
+
+		g.ShiftY = 1
 
 		m[r] = g
 	}
@@ -219,18 +226,26 @@ func isValidGlyph(r rune, g *bdf.Glyph) bool {
 	return true
 }
 
-var glyphs map[rune]*bdf.Glyph
+var glyphs map[int]map[rune]*bdf.Glyph
 
 func init() {
-	var err error
-	glyphs, err = readBDF()
+	glyphs10r, err := readBDF(10)
 	if err != nil {
 		panic(err)
 	}
+	glyphs12r, err := readBDF(12)
+	if err != nil {
+		panic(err)
+	}
+
+	glyphs = map[int]map[rune]*bdf.Glyph{
+		10: glyphs10r,
+		12: glyphs12r,
+	}
 }
 
-func Glyph(r rune) (bdf.Glyph, bool) {
-	g, ok := glyphs[r]
+func Glyph(r rune, size int) (bdf.Glyph, bool) {
+	g, ok := glyphs[size][r]
 	if !ok {
 		return bdf.Glyph{}, false
 	}

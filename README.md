@@ -2,7 +2,8 @@
 
 [![GoDoc](https://godoc.org/github.com/hajimehoshi/bitmapfont?status.svg)](https://godoc.org/github.com/hajimehoshi/bitmapfont)
 
-![Example](example/example.png)
+![Example](example/example_12.png)
+![Example](example/example_10.png)
 
 Package bitmapfont offers a font.Face value of some bitmap fonts.
 

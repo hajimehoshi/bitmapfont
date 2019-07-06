@@ -32,12 +32,19 @@ import (
 
 var (
 	flagOutput = flag.String("output", "", "output file")
+	flagSize   = flag.Int("size", 12, "font size in pixels")
 )
 
-const (
-	glyphWidth  = 12
-	glyphHeight = 16
-)
+func glyphSize(size int) (width, height int) {
+	switch size {
+	case 10:
+		return 10, 12
+	case 12:
+		return 12, 16
+	default:
+		panic("not reached")
+	}
+}
 
 type fontType int
 
@@ -48,7 +55,7 @@ const (
 	fontTypeBaekmuk
 )
 
-func getFontType(r rune) fontType {
+func getFontType(r rune, size int) fontType {
 	if 0x2500 <= r && r <= 0x257f {
 		// Box Drawing
 		// M+ defines a part of box drawing glyphs.
@@ -59,34 +66,34 @@ func getFontType(r rune) fontType {
 		// Halfwidth Katakana
 		return fontTypeMPlus
 	}
-	if _, ok := fixed.Glyph(r); ok {
+	if _, ok := fixed.Glyph(r, size); ok {
 		return fontTypeFixed
 	}
-	if _, ok := mplus.Glyph(r); ok {
+	if _, ok := mplus.Glyph(r, size); ok {
 		return fontTypeMPlus
 	}
-	if _, ok := baekmuk.Glyph(r); ok {
+	if _, ok := baekmuk.Glyph(r, size); ok {
 		return fontTypeBaekmuk
 	}
 	return fontTypeNone
 }
 
-func getGlyph(r rune) (bdf.Glyph, bool) {
-	switch getFontType(r) {
+func getGlyph(r rune, size int) (bdf.Glyph, bool) {
+	switch getFontType(r, size) {
 	case fontTypeNone:
 		return bdf.Glyph{}, false
 	case fontTypeFixed:
-		g, ok := fixed.Glyph(r)
+		g, ok := fixed.Glyph(r, size)
 		if ok {
 			return g, true
 		}
 	case fontTypeMPlus:
-		g, ok := mplus.Glyph(r)
+		g, ok := mplus.Glyph(r, size)
 		if ok {
 			return g, true
 		}
 	case fontTypeBaekmuk:
-		g, ok := baekmuk.Glyph(r)
+		g, ok := baekmuk.Glyph(r, size)
 		if ok {
 			return g, true
 		}
@@ -96,17 +103,18 @@ func getGlyph(r rune) (bdf.Glyph, bool) {
 	return bdf.Glyph{}, false
 }
 
-func addGlyphs(img draw.Image) {
+func addGlyphs(img draw.Image, size int) {
+	gw, gh := glyphSize(size)
 	for j := 0; j < 0x100; j++ {
 		for i := 0; i < 0x100; i++ {
 			r := rune(i + j*0x100)
-			g, ok := getGlyph(r)
+			g, ok := getGlyph(r, size)
 			if !ok {
 				continue
 			}
 
-			dstX := i*glyphWidth + g.X
-			dstY := j*glyphHeight + ((glyphHeight - g.Height) - 4 - g.Y)
+			dstX := i*gw + g.X
+			dstY := j*gh + ((gh - g.Height) - 4 - g.Y)
 			dstR := image.Rect(dstX, dstY, dstX+g.Width, dstY+g.Height)
 			p := g.Bounds().Min
 			draw.Draw(img, dstR, &g, p, draw.Over)
@@ -115,8 +123,11 @@ func addGlyphs(img draw.Image) {
 }
 
 func run() error {
-	img := image.NewAlpha(image.Rect(0, 0, glyphWidth*256, glyphHeight*256))
-	addGlyphs(img)
+	s := *flagSize
+
+	gw, gh := glyphSize(s)
+	img := image.NewAlpha(image.Rect(0, 0, gw*256, gh*256))
+	addGlyphs(img, s)
 
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
