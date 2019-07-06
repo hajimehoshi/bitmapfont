@@ -39,7 +39,7 @@ func init() {
 		dotY = 12
 	)
 
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha))
+	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha12r))
 	if err != nil {
 		panic(err)
 	}

@@ -17,6 +17,6 @@ package bitmapfont
 // Package github.com/hajimehoshi/png2compressedrgba is required.
 // Package github.com/hajimehoshi/file2byteslice is required.
 
-//go:generate go run -tags=generate ./internal/gen -output /tmp/compressedFontAlpha
-//go:generate file2byteslice -input /tmp/compressedFontAlpha -output image.go -package bitmapfont -var compressedFontAlpha
+//go:generate go run -tags=generate ./internal/gen -output /tmp/compressedFontAlpha12r
+//go:generate file2byteslice -input /tmp/compressedFontAlpha12r -output image12r.go -package bitmapfont -var compressedFontAlpha12r
 //go:generate gofmt -s -w .
