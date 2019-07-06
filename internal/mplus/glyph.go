@@ -93,22 +93,26 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	var glyphse []*bdf.Glyph
-	if size == 12 {
-		fe, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_f%dr.bdf", size)))
-		if err != nil {
-			return nil, err
-		}
-		defer fe.Close()
+	// Latin alphabets
+	prefix := "f"
+	postfix := ""
+	if size == 10 {
+		prefix = "j"
+		postfix = "-iso-W4"
+	}
+	fe, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_%s%dr%s.bdf", prefix, size, postfix)))
+	if err != nil {
+		return nil, err
+	}
+	defer fe.Close()
 
-		glyphse, err = bdf.Parse(fe)
-		if err != nil {
-			return nil, err
-		}
+	glyphse, err := bdf.Parse(fe)
+	if err != nil {
+		return nil, err
 	}
 
-	// For Hankaku-kana glyphs
-	prefix := "f"
+	// Hankaku-kana glyphs
+	prefix = "f"
 	if size == 10 {
 		prefix = "h"
 	}
@@ -123,6 +127,7 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		return nil, err
 	}
 
+	// Other characters (e.g., Kanji)
 	fj, err := os.Open(filepath.Join(dir, fmt.Sprintf("mplus_j%dr.bdf", size)))
 	if err != nil {
 		return nil, err
@@ -157,10 +162,9 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			}
 			return nil, fmt.Errorf("mplus: invalid char code 0x%x as JIS X 0201", g.Encoding)
 		}
-		if _, ok := m[r]; ok {
-			continue
+		if 0xff60 <= r && r <= 0xffdf {
+			m[r] = g
 		}
-		m[r] = g
 	}
 
 	for _, g := range glyphsj {
@@ -176,8 +180,9 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 				return nil, fmt.Errorf("mplus: invalid char code 0x%x (Shift_JIS: 0x%x)", g.Encoding, s)
 			}
 		}
+
 		if _, ok := m[r]; ok {
-			// Prefer f12r for Latin glyphs.
+			// Prefer f12r/j10r-iso for Latin glyphs.
 			continue
 		}
 
