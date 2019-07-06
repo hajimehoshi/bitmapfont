@@ -181,7 +181,9 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			return nil, fmt.Errorf("mplus: invalid glyph for rune 0x%x", r)
 		}
 
-		g.ShiftY = 1
+		if size == 10 {
+			g.ShiftY = 1
+		}
 
 		m[r] = g
 	}
