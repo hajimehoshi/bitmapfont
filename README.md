@@ -2,7 +2,12 @@
 
 [![GoDoc](https://godoc.org/github.com/hajimehoshi/bitmapfont?status.svg)](https://godoc.org/github.com/hajimehoshi/bitmapfont)
 
+## 12px glyphs (`Gothic12r`)
+
 ![Example](example/example_12.png)
+
+## 10px glyphs (`Gothic10r`)
+
 ![Example](example/example_10.png)
 
 Package bitmapfont offers a font.Face value of some bitmap fonts.
