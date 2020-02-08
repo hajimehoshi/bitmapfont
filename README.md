@@ -10,6 +10,8 @@
 
 ![Example](example/example_10.png)
 
+## Sources
+
 Package bitmapfont offers a font.Face value of some bitmap fonts.
 
    * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
