@@ -46,7 +46,7 @@ func run() error {
 ang: Ealle fīras sind boren frēo ond geefenlican in ār ond riht.
 de:  Alle Menschen sind frei und gleich an Würde und Rechten geboren.
 el:  'Ολοι οι άνθρωποι γεννιούνται ελεύθεροι και ίσοι στην αξιοπρέπεια και τα δικαιώματα.
-es:  Todos los seres humanos nacen libres e iguales en dignidad y derechos y, dotados.
+es:  Todos los seres humanos nacen libres e iguales en dignidad y derechos y dotados.
 eo:  Ĉiuj homoj estas denaske liberaj kaj egalaj laŭ digno kaj rajtoj.
 fr:  Tous les êtres humains naissent libres et égaux en dignité et en droits.
 got: ᚨᛚᛚᚨᛁ ᛗᚨᚾᚾᚨ ᚠᚱᛖᛁᚺᚨᛚᛋ ᛃᚨᚺ ᛋᚨᛗᚨᛚᛖᛁᚲᛟ ᛁᚾ ᚹᚨᛁᚱᚦᛁᛞᚨᛁ ᛃᚨᚺ ᚱᚨᛁᚺᛏᛖᛁᛋ ᚹᚨᚢᚱᚦᚨᚾᛋ.
