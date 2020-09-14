@@ -10,7 +10,7 @@
 
 ![Example](example/example_10.png)
 
-The `EastAsianWide` version includes wide glyphs for the characters that has East Asian ambiguous widths (e.g., `※`, `…`, `α`).
+The `EastAsianWide` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
 
 ## Sources
 
