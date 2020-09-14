@@ -97,7 +97,11 @@ func (f *Face) runeWidth(r rune) int {
 	if unicode.IsEuropian(r) {
 		return f.charHalfWidth()
 	}
-	if unicode.IsPunctuation(r) {
+	// TODO: This includes ambiguous-width characters.
+	if unicode.IsGeneralPunctuation(r) {
+		return f.charHalfWidth()
+	}
+	if unicode.IsSupplementalPunctuation(r) {
 		return f.charHalfWidth()
 	}
 	if 0xff61 <= r && r <= 0xffdc {

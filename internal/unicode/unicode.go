@@ -210,15 +210,15 @@ func IsEuropian(r rune) bool {
 	return false
 }
 
-func IsPunctuation(r rune) bool {
+func IsGeneralPunctuation(r rune) bool {
 	if 0x2000 <= r && r <= 0x206f {
-		// [Common, Inherited]
-		// General Punctuation
 		return true
 	}
+	return false
+}
+
+func IsSupplementalPunctuation(r rune) bool {
 	if 0x2e00 <= r && r <= 0x2e7f {
-		// [Common]
-		// Supplemental Punctuation
 		return true
 	}
 	return false

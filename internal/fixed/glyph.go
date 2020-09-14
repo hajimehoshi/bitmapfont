@@ -56,7 +56,7 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			// Ogham glyphs in misc-fixed are too condenced. Skip this.
 			continue
 		}
-		if !unicode.IsEuropian(r) && !unicode.IsPunctuation(r) {
+		if !unicode.IsEuropian(r) && !unicode.IsGeneralPunctuation(r) && !unicode.IsSupplementalPunctuation(r) {
 			if unicode.IsHebrew(r) {
 				continue
 			}
