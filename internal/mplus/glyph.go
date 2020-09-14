@@ -21,7 +21,6 @@ import (
 	"runtime"
 
 	"github.com/hajimehoshi/bitmapfont/internal/bdf"
-	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 	"github.com/hajimehoshi/bitmapfont/internal/uniconv"
 )
 
@@ -206,14 +205,6 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		return nil, fmt.Errorf("mplus: FULLWIDTH TILDE (0x%x) not found", uniFullwidthTilde)
 	}
 	m[uniWaveDash] = m[uniFullwidthTilde]
-
-	// Skip Greek and Cyrillic glyphs. They are wide widths.
-	for r := range m {
-		if unicode.IsGreek(r) || unicode.IsCyrillic(r) {
-			delete(m, r)
-		}
-	}
-
 	return m, nil
 }
 

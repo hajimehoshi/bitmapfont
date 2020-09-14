@@ -24,6 +24,8 @@ import (
 	"image/draw"
 	"os"
 
+	"golang.org/x/text/width"
+
 	"github.com/hajimehoshi/bitmapfont/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/internal/bdf"
 	"github.com/hajimehoshi/bitmapfont/internal/fixed"
@@ -31,8 +33,9 @@ import (
 )
 
 var (
-	flagOutput = flag.String("output", "", "output file")
-	flagSize   = flag.Int("size", 12, "font size in pixels")
+	flagOutput   = flag.String("output", "", "output file")
+	flagSize     = flag.Int("size", 12, "font size in pixels")
+	flagEastAsia = flag.Bool("eastasia", false, "prefer east Asia punctuations")
 )
 
 func glyphSize(size int) (width, height int) {
@@ -66,28 +69,22 @@ func getFontType(r rune, size int) fontType {
 		// Halfwidth Katakana
 		return fontTypeMPlus
 	}
-	switch size {
-	case 10:
-		// Prefer Latin alphabets of M+ for quality.
-		if _, ok := mplus.Glyph(r, size); ok {
+
+	if width.LookupRune(r).Kind() == width.EastAsianAmbiguous {
+		if *flagEastAsia {
 			return fontTypeMPlus
 		}
-		if _, ok := fixed.Glyph(r, size); ok {
-			return fontTypeFixed
-		}
-		if _, ok := baekmuk.Glyph(r, size); ok {
-			return fontTypeBaekmuk
-		}
-	case 12:
-		if _, ok := fixed.Glyph(r, size); ok {
-			return fontTypeFixed
-		}
-		if _, ok := mplus.Glyph(r, size); ok {
-			return fontTypeMPlus
-		}
-		if _, ok := baekmuk.Glyph(r, size); ok {
-			return fontTypeBaekmuk
-		}
+		return fontTypeFixed
+	}
+
+	if _, ok := fixed.Glyph(r, size); ok {
+		return fontTypeFixed
+	}
+	if _, ok := mplus.Glyph(r, size); ok {
+		return fontTypeMPlus
+	}
+	if _, ok := baekmuk.Glyph(r, size); ok {
+		return fontTypeBaekmuk
 	}
 	return fontTypeNone
 }

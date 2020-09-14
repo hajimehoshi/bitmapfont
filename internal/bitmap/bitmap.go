@@ -20,6 +20,7 @@ import (
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
+	"golang.org/x/text/width"
 
 	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 )
@@ -78,26 +79,34 @@ const (
 )
 
 type Face struct {
-	image *BinaryImage
-	dotX  fixed.Int26_6
-	dotY  fixed.Int26_6
+	image    *BinaryImage
+	dotX     fixed.Int26_6
+	dotY     fixed.Int26_6
+	eastAsia bool
 }
 
-func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6) *Face {
+func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6, eastAsia bool) *Face {
 	return &Face{
-		image: image,
-		dotX:  dotX,
-		dotY:  dotY,
+		image:    image,
+		dotX:     dotX,
+		dotY:     dotY,
+		eastAsia: eastAsia,
 	}
 }
 
 func (f *Face) runeWidth(r rune) int {
+	if width.LookupRune(r).Kind() == width.EastAsianAmbiguous {
+		if f.eastAsia {
+			return f.charFullWidth()
+		}
+		return f.charHalfWidth()
+	}
+
 	// TODO: This condition depends on the fact that Europian glyphs are from misc-fixed.
 	// Refactor this.
 	if unicode.IsEuropian(r) {
 		return f.charHalfWidth()
 	}
-	// TODO: This includes ambiguous-width characters.
 	if unicode.IsGeneralPunctuation(r) {
 		return f.charHalfWidth()
 	}

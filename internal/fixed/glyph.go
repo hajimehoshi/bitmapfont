@@ -50,13 +50,63 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 	if err != nil {
 		return nil, err
 	}
+	isOK := func(r rune) bool {
+		if unicode.IsEuropian(r) {
+			return true
+		}
+		if unicode.IsGeneralPunctuation(r) {
+			return true
+		}
+		if unicode.IsSupplementalPunctuation(r) {
+			return true
+		}
+		if 0x2100 <= r && r <= 0x218f {
+			// Letterlike Symbols
+			// Number Forms
+			return true
+		}
+		if 0x2190 <= r && r <= 0x27ff {
+			// [Common]
+			// Arrows
+			// Mathematical Operators
+			// Miscellaneous Technical
+			// Control Pictures
+			// Optical Character Recognition
+			// Enclosed Alphanumerics
+			// Box Drawing
+			// Block Elements
+			// Geometric Shapes
+			// Miscellaneous Symbols
+			// Dingbats
+			// Miscellaneous Mathematical Symbols-A
+			// Supplemental Arrows-A
+			return true
+		}
+		if 0x2800 <= r && r <= 0x28ff {
+			// Braille Patterns
+			return true
+		}
+		if 0x2900 <= r && r <= 0x2aff {
+			// [Common]
+			// Supplemental Arrows-B
+			// Miscellaneous Mathematical Symbols-B
+			// Supplemental Mathematical Operators
+			return true
+		}
+		if 0x3000 <= r && r <= 0x303f {
+			// CJK Symbols and Punctuation
+			return true
+		}
+		return false
+	}
+
 	for _, g := range glyphs {
 		r := rune(g.Encoding)
-		if unicode.IsOgham(r) {
-			// Ogham glyphs in misc-fixed are too condenced. Skip this.
-			continue
-		}
-		if !unicode.IsEuropian(r) && !unicode.IsGeneralPunctuation(r) && !unicode.IsSupplementalPunctuation(r) {
+		if !isOK(r) {
+			if unicode.IsOgham(r) {
+				// Ogham glyphs in misc-fixed are too condenced. Skip this.
+				continue
+			}
 			if unicode.IsHebrew(r) {
 				continue
 			}
@@ -65,44 +115,6 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			}
 			if 0x1100 <= r && r <= 0x11ff {
 				// Hangul Jamo
-				continue
-			}
-
-			if 0x2100 <= r && r <= 0x218f {
-				// Letterlike Symbols
-				// Number Forms
-				continue
-			}
-			if 0x2190 <= r && r <= 0x27ff {
-				// [Common]
-				// Arrows
-				// Mathematical Operators
-				// Miscellaneous Technical
-				// Control Pictures
-				// Optical Character Recognition
-				// Enclosed Alphanumerics
-				// Box Drawing
-				// Block Elements
-				// Geometric Shapes
-				// Miscellaneous Symbols
-				// Dingbats
-				// Miscellaneous Mathematical Symbols-A
-				// Supplemental Arrows-A
-				continue
-			}
-			if 0x2800 <= r && r <= 0x28ff {
-				// Braille Patterns
-				continue
-			}
-			if 0x2900 <= r && r <= 0x2aff {
-				// [Common]
-				// Supplemental Arrows-B
-				// Miscellaneous Mathematical Symbols-B
-				// Supplemental Mathematical Operators
-				continue
-			}
-			if 0x3000 <= r && r <= 0x303f {
-				// CJK Symbols and Punctuation
 				continue
 			}
 			if 0xe000 <= r && r <= 0xf8ff {

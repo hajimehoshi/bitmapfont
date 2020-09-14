@@ -34,7 +34,8 @@ import (
 )
 
 var (
-	flagTest = flag.Bool("test", false, "test mode")
+	flagTest     = flag.Bool("test", false, "test mode")
+	flagEastAsia = flag.Bool("eastasia", false, "East Asia")
 )
 
 func run() error {
@@ -81,7 +82,11 @@ vi:  Tất cả mọi người sinh ra đều được tự do và bình đẳng
 	for _, s := range []int{10, 12} {
 		path := fmt.Sprintf("example_%d.png", s)
 		if *flagTest {
-			path = fmt.Sprintf("test_%d.png", s)
+			if *flagEastAsia {
+				path = fmt.Sprintf("test_%dea.png", s)
+			} else {
+				path = fmt.Sprintf("test_%d.png", s)
+			}
 		}
 		if err := outputImageFile(s, text, *flagTest, path); err != nil {
 			return err
@@ -118,9 +123,17 @@ func outputImageFile(size int, text string, grid bool, path string) error {
 	var f font.Face
 	switch size {
 	case 10:
-		f = bitmapfont.Gothic10r
+		if *flagEastAsia {
+			f = bitmapfont.Gothic10rEastAsianWide
+		} else {
+			f = bitmapfont.Gothic10r
+		}
 	case 12:
-		f = bitmapfont.Gothic12r
+		if *flagEastAsia {
+			f = bitmapfont.Gothic12rEastAsianWide
+		} else {
+			f = bitmapfont.Gothic12r
+		}
 	}
 
 	lines := strings.Split(strings.TrimSpace(text), "\n")
