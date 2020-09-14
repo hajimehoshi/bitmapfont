@@ -15,14 +15,13 @@
 package bitmap
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 	"golang.org/x/text/width"
-
-	"github.com/hajimehoshi/bitmapfont/internal/unicode"
 )
 
 type BinaryImage struct {
@@ -79,47 +78,41 @@ const (
 )
 
 type Face struct {
-	image    *BinaryImage
-	dotX     fixed.Int26_6
-	dotY     fixed.Int26_6
-	eastAsia bool
+	image        *BinaryImage
+	dotX         fixed.Int26_6
+	dotY         fixed.Int26_6
+	eastAsiaWide bool
 }
 
-func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6, eastAsia bool) *Face {
+func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6, eastAsiaWide bool) *Face {
 	return &Face{
-		image:    image,
-		dotX:     dotX,
-		dotY:     dotY,
-		eastAsia: eastAsia,
+		image:        image,
+		dotX:         dotX,
+		dotY:         dotY,
+		eastAsiaWide: eastAsiaWide,
 	}
 }
 
 func (f *Face) runeWidth(r rune) int {
-	if width.LookupRune(r).Kind() == width.EastAsianAmbiguous {
-		if f.eastAsia {
+	switch k := width.LookupRune(r).Kind(); k {
+	case width.Neutral:
+		return f.charHalfWidth()
+	case width.EastAsianAmbiguous:
+		if f.eastAsiaWide {
 			return f.charFullWidth()
 		}
 		return f.charHalfWidth()
-	}
-
-	// TODO: This condition depends on the fact that Europian glyphs are from misc-fixed.
-	// Refactor this.
-	if unicode.IsEuropian(r) {
+	case width.EastAsianWide:
+		return f.charFullWidth()
+	case width.EastAsianNarrow:
 		return f.charHalfWidth()
-	}
-	if unicode.IsGeneralPunctuation(r) {
+	case width.EastAsianFullwidth:
+		return f.charFullWidth()
+	case width.EastAsianHalfwidth:
 		return f.charHalfWidth()
+	default:
+		panic(fmt.Sprintf("bitmap: unexpected kind: %d", k))
 	}
-	if unicode.IsSupplementalPunctuation(r) {
-		return f.charHalfWidth()
-	}
-	if 0xff61 <= r && r <= 0xffdc {
-		return f.charHalfWidth()
-	}
-	if 0xffe8 <= r && r <= 0xffee {
-		return f.charHalfWidth()
-	}
-	return f.charFullWidth()
 }
 
 func (f *Face) charFullWidth() int {
