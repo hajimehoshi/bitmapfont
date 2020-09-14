@@ -197,11 +197,6 @@ func IsEuropian(r rune) bool {
 		// Combining Diacritical Marks
 		return true
 	}
-	if 0x2000 <= r && r <= 0x206f {
-		// [Common, Inherited]
-		// General Punctuation
-		return true
-	}
 	if 0x20a0 <= r && r <= 0x20cf {
 		// [Common]
 		// Currency Symbols
@@ -210,6 +205,15 @@ func IsEuropian(r rune) bool {
 	if 0x20d0 <= r && r <= 0x20ff {
 		// [Inherited]
 		// Combining Diacritical Marks for Symbols
+		return true
+	}
+	return false
+}
+
+func IsPunctuation(r rune) bool {
+	if 0x2000 <= r && r <= 0x206f {
+		// [Common, Inherited]
+		// General Punctuation
 		return true
 	}
 	if 0x2e00 <= r && r <= 0x2e7f {
