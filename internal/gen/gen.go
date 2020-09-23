@@ -27,7 +27,6 @@ import (
 	"golang.org/x/text/width"
 
 	"github.com/hajimehoshi/bitmapfont/v2/internal/baekmuk"
-	"github.com/hajimehoshi/bitmapfont/v2/internal/bdf"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/mplus"
 )
@@ -81,29 +80,29 @@ func getFontType(r rune) fontType {
 	return fontTypeNone
 }
 
-func getGlyph(r rune) (bdf.Glyph, bool) {
+func getGlyph(r rune) (image.Image, bool) {
 	switch getFontType(r) {
 	case fontTypeNone:
-		return bdf.Glyph{}, false
+		return nil, false
 	case fontTypeFixed:
 		g, ok := fixed.Glyph(r, 12)
 		if ok {
-			return g, true
+			return &g, true
 		}
 	case fontTypeMPlus:
 		g, ok := mplus.Glyph(r, 12)
 		if ok {
-			return g, true
+			return &g, true
 		}
 	case fontTypeBaekmuk:
 		g, ok := baekmuk.Glyph(r, 12)
 		if ok {
-			return g, true
+			return &g, true
 		}
 	default:
 		panic("not reached")
 	}
-	return bdf.Glyph{}, false
+	return nil, false
 }
 
 func addGlyphs(img draw.Image) {
@@ -116,11 +115,13 @@ func addGlyphs(img draw.Image) {
 				continue
 			}
 
-			dstX := i*gw + g.X
-			dstY := j*gh + ((gh - g.Height) - 4 - g.Y)
-			dstR := image.Rect(dstX, dstY, dstX+g.Width, dstY+g.Height)
+			b := g.Bounds()
+			w, h := b.Dx(), b.Dy()
+			dstX := i * gw
+			dstY := j*gh + (gh - h)
+			dstR := image.Rect(dstX, dstY, dstX+w, dstY+h)
 			p := g.Bounds().Min
-			draw.Draw(img, dstR, &g, p, draw.Over)
+			draw.Draw(img, dstR, g, p, draw.Over)
 		}
 	}
 }

@@ -40,13 +40,23 @@ func (g *Glyph) ColorModel() color.Model {
 	return color.AlphaModel
 }
 
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
 func (g *Glyph) Bounds() image.Rectangle {
-	return image.Rect(0, 0, g.Width, g.Height)
+	return image.Rect(0, 0, g.Width+abs(g.X), g.Height+abs(g.Y))
 }
 
 func (g *Glyph) At(x, y int) color.Color {
 	x -= g.ShiftX
 	y -= g.ShiftY
+	x -= g.X
+	y += g.Y
+	y += 2
 	if x < 0 || y < 0 || x >= g.Width || y >= g.Height {
 		return color.Alpha{}
 	}
