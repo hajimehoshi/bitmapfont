@@ -1,6 +1,6 @@
 # bitmapfont (v2)
 
-[![GoDoc](https://godoc.org/github.com/hajimehoshi/bitmapfont?status.svg)](https://godoc.org/github.com/hajimehoshi/bitmapfont)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/hajimehoshi/bitmapfont/v2)](https://pkg.go.dev/github.com/hajimehoshi/bitmapfont/v2)
 
 ## 12px glyphs (`Face` / `FaceEA`)
 
