@@ -108,9 +108,9 @@ func outputImageFile(text string, grid bool, path string) error {
 
 	var f font.Face
 	if *flagEastAsia {
-		f = bitmapfont.Gothic12rEastAsianWide
+		f = bitmapfont.FaceEA
 	} else {
-		f = bitmapfont.Gothic12r
+		f = bitmapfont.Face
 	}
 
 	lines := strings.Split(strings.TrimSpace(text), "\n")

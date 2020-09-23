@@ -2,11 +2,11 @@
 
 [![GoDoc](https://godoc.org/github.com/hajimehoshi/bitmapfont?status.svg)](https://godoc.org/github.com/hajimehoshi/bitmapfont)
 
-## 12px glyphs (`Gothic12r` / `Gothic12rEastAsianWide`)
+## 12px glyphs (`Face` / `FaceEA`)
 
 ![Example](example/example.png)
 
-The `EastAsianWide` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
+The `EA` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
 
 ## Sources
 

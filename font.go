@@ -39,7 +39,7 @@ func init() {
 		dotY = 12
 	)
 
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha12r))
+	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlphaFace))
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +50,7 @@ func init() {
 		panic(err)
 	}
 
-	Gothic12r = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
+	Face = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
 }
 
 func init() {
@@ -62,7 +62,7 @@ func init() {
 		dotY = 12
 	)
 
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha12rEastAsia))
+	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlphaFaceEA))
 	if err != nil {
 		panic(err)
 	}
@@ -73,13 +73,13 @@ func init() {
 		panic(err)
 	}
 
-	Gothic12rEastAsianWide = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), true)
+	FaceEA = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), true)
 }
 
 var (
-	// Gothic12r is a font.Face of the bitmap font (12px regular).
-	Gothic12r font.Face
+	// Face is a font.Face of the bitmap font (12px regular).
+	Face font.Face
 
-	// Gothic12rEastAsia is a font.Face of the bitmap font (12px regular, prefer East Asian wide characters).
-	Gothic12rEastAsianWide font.Face
+	// FaceEA is a font.Face of the bitmap font (12px regular, prefer East Asian wide characters).
+	FaceEA font.Face
 )
