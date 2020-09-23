@@ -26,10 +26,10 @@ import (
 
 	"golang.org/x/text/width"
 
-	"github.com/hajimehoshi/bitmapfont/internal/baekmuk"
-	"github.com/hajimehoshi/bitmapfont/internal/bdf"
-	"github.com/hajimehoshi/bitmapfont/internal/fixed"
-	"github.com/hajimehoshi/bitmapfont/internal/mplus"
+	"github.com/hajimehoshi/bitmapfont/v2/internal/baekmuk"
+	"github.com/hajimehoshi/bitmapfont/v2/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
+	"github.com/hajimehoshi/bitmapfont/v2/internal/mplus"
 )
 
 var (
