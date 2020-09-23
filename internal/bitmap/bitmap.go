@@ -94,6 +94,10 @@ func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6, eastAsiaWide bool) *F
 }
 
 func (f *Face) runeWidth(r rune) int {
+	if _, ok := wideRunes[r]; ok {
+		return f.charFullWidth()
+	}
+
 	switch k := width.LookupRune(r).Kind(); k {
 	case width.Neutral:
 		return f.charHalfWidth()
