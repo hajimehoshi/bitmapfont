@@ -1,4 +1,4 @@
-# bitmapfont
+# bitmapfont (v2)
 
 [![GoDoc](https://godoc.org/github.com/hajimehoshi/bitmapfont?status.svg)](https://godoc.org/github.com/hajimehoshi/bitmapfont)
 
