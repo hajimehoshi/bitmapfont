@@ -34,19 +34,11 @@ import (
 
 var (
 	flagOutput   = flag.String("output", "", "output file")
-	flagSize     = flag.Int("size", 12, "font size in pixels")
 	flagEastAsia = flag.Bool("eastasia", false, "prefer east Asia punctuations")
 )
 
-func glyphSize(size int) (width, height int) {
-	switch size {
-	case 10:
-		return 10, 12
-	case 12:
-		return 12, 16
-	default:
-		panic("not reached")
-	}
+func glyphSize() (width, height int) {
+	return 12, 16
 }
 
 type fontType int
@@ -58,7 +50,7 @@ const (
 	fontTypeBaekmuk
 )
 
-func getFontType(r rune, size int) fontType {
+func getFontType(r rune) fontType {
 	if 0x2500 <= r && r <= 0x257f {
 		// Box Drawing
 		// M+ defines a part of box drawing glyphs.
@@ -77,34 +69,34 @@ func getFontType(r rune, size int) fontType {
 		return fontTypeFixed
 	}
 
-	if _, ok := fixed.Glyph(r, size); ok {
+	if _, ok := fixed.Glyph(r, 12); ok {
 		return fontTypeFixed
 	}
-	if _, ok := mplus.Glyph(r, size); ok {
+	if _, ok := mplus.Glyph(r, 12); ok {
 		return fontTypeMPlus
 	}
-	if _, ok := baekmuk.Glyph(r, size); ok {
+	if _, ok := baekmuk.Glyph(r, 12); ok {
 		return fontTypeBaekmuk
 	}
 	return fontTypeNone
 }
 
-func getGlyph(r rune, size int) (bdf.Glyph, bool) {
-	switch getFontType(r, size) {
+func getGlyph(r rune) (bdf.Glyph, bool) {
+	switch getFontType(r) {
 	case fontTypeNone:
 		return bdf.Glyph{}, false
 	case fontTypeFixed:
-		g, ok := fixed.Glyph(r, size)
+		g, ok := fixed.Glyph(r, 12)
 		if ok {
 			return g, true
 		}
 	case fontTypeMPlus:
-		g, ok := mplus.Glyph(r, size)
+		g, ok := mplus.Glyph(r, 12)
 		if ok {
 			return g, true
 		}
 	case fontTypeBaekmuk:
-		g, ok := baekmuk.Glyph(r, size)
+		g, ok := baekmuk.Glyph(r, 12)
 		if ok {
 			return g, true
 		}
@@ -114,12 +106,12 @@ func getGlyph(r rune, size int) (bdf.Glyph, bool) {
 	return bdf.Glyph{}, false
 }
 
-func addGlyphs(img draw.Image, size int) {
-	gw, gh := glyphSize(size)
+func addGlyphs(img draw.Image) {
+	gw, gh := glyphSize()
 	for j := 0; j < 0x100; j++ {
 		for i := 0; i < 0x100; i++ {
 			r := rune(i + j*0x100)
-			g, ok := getGlyph(r, size)
+			g, ok := getGlyph(r)
 			if !ok {
 				continue
 			}
@@ -134,11 +126,9 @@ func addGlyphs(img draw.Image, size int) {
 }
 
 func run() error {
-	s := *flagSize
-
-	gw, gh := glyphSize(s)
+	gw, gh := glyphSize()
 	img := image.NewAlpha(image.Rect(0, 0, gw*256, gh*256))
-	addGlyphs(img, s)
+	addGlyphs(img)
 
 	b := img.Bounds()
 	w, h := b.Dx(), b.Dy()
