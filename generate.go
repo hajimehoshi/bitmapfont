@@ -23,10 +23,4 @@ package bitmapfont
 //go:generate go run -tags=generate ./internal/gen -size 12 -eastasia -output /tmp/compressedFontAlpha12rEastAsia
 //go:generate file2byteslice -input /tmp/compressedFontAlpha12rEastAsia -output image12rea.go -package bitmapfont -var compressedFontAlpha12rEastAsia
 
-//go:generate go run -tags=generate ./internal/gen -size 10 -output /tmp/compressedFontAlpha10r
-//go:generate file2byteslice -input /tmp/compressedFontAlpha10r -output image10r.go -package bitmapfont -var compressedFontAlpha10r
-
-//go:generate go run -tags=generate ./internal/gen -size 10 -output /tmp/compressedFontAlpha10rEastAsia
-//go:generate file2byteslice -input /tmp/compressedFontAlpha10rEastAsia -output image10rea.go -package bitmapfont -var compressedFontAlpha10rEastAsia
-
 //go:generate gofmt -s -w .
