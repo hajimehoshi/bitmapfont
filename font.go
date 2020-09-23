@@ -32,52 +32,6 @@ import (
 
 func init() {
 	const (
-		imageWidth  = 10 * 256
-		imageHeight = 12 * 256
-
-		dotX = 3
-		dotY = 9
-	)
-
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha10r))
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	bits, err := ioutil.ReadAll(s)
-	if err != nil {
-		panic(err)
-	}
-
-	Gothic10r = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
-}
-
-func init() {
-	const (
-		imageWidth  = 10 * 256
-		imageHeight = 12 * 256
-
-		dotX = 3
-		dotY = 9
-	)
-
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlpha10rEastAsia))
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	bits, err := ioutil.ReadAll(s)
-	if err != nil {
-		panic(err)
-	}
-
-	Gothic10rEastAsianWide = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), true)
-}
-
-func init() {
-	const (
 		imageWidth  = 12 * 256
 		imageHeight = 16 * 256
 
@@ -123,12 +77,6 @@ func init() {
 }
 
 var (
-	// Gothic10r is a font.Face of the bitmap font (10px regular).
-	Gothic10r font.Face
-
-	// Gothic10rEastAsianWide is a font.Face of the bitmap font (10px regular, prefer East Asian wide characters).
-	Gothic10rEastAsianWide font.Face
-
 	// Gothic12r is a font.Face of the bitmap font (12px regular).
 	Gothic12r font.Face
 
