@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -80,61 +79,38 @@ vi:      Tất cả mọi người sinh ra đều được tự do và bình đ�
 		}
 	}
 
-	for _, s := range []int{10, 12} {
-		path := fmt.Sprintf("example_%d.png", s)
-		if *flagTest {
-			if *flagEastAsia {
-				path = fmt.Sprintf("test_%dea.png", s)
-			} else {
-				path = fmt.Sprintf("test_%d.png", s)
-			}
+	path := "example.png"
+	if *flagTest {
+		if *flagEastAsia {
+			path = "test_ea.png"
+		} else {
+			path = "test.png"
 		}
-		if err := outputImageFile(s, text, *flagTest, path); err != nil {
-			return err
-		}
+	}
+	if err := outputImageFile(text, *flagTest, path); err != nil {
+		return err
 	}
 	return nil
 }
 
-func outputImageFile(size int, text string, grid bool, path string) error {
+func outputImageFile(text string, grid bool, path string) error {
 	const (
 		offsetX = 8
 		offsetY = 8
 	)
 
-	var (
-		dotX        int
-		dotY        int
-		glyphWidth  int
-		glyphHeight int
-	)
-	switch size {
-	case 10:
-		dotX = 3
-		dotY = 9
-		glyphWidth = 10
-		glyphHeight = 12
-	case 12:
-		dotX = 4
-		dotY = 12
-		glyphWidth = 12
+	const (
+		dotX        = 4
+		dotY        = 12
+		glyphWidth  = 12
 		glyphHeight = 16
-	}
+	)
 
 	var f font.Face
-	switch size {
-	case 10:
-		if *flagEastAsia {
-			f = bitmapfont.Gothic10rEastAsianWide
-		} else {
-			f = bitmapfont.Gothic10r
-		}
-	case 12:
-		if *flagEastAsia {
-			f = bitmapfont.Gothic12rEastAsianWide
-		} else {
-			f = bitmapfont.Gothic12r
-		}
+	if *flagEastAsia {
+		f = bitmapfont.Gothic12rEastAsianWide
+	} else {
+		f = bitmapfont.Gothic12r
 	}
 
 	lines := strings.Split(strings.TrimSpace(text), "\n")

@@ -4,7 +4,7 @@
 
 ## 12px glyphs (`Gothic12r` / `Gothic12rEastAsianWide`)
 
-![Example](example/example_12.png)
+![Example](example/example.png)
 
 The `EastAsianWide` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
 
