@@ -54,9 +54,8 @@ func (g *Glyph) Bounds() image.Rectangle {
 func (g *Glyph) At(x, y int) color.Color {
 	x -= g.ShiftX
 	y -= g.ShiftY
-	x -= g.X
-	y += g.Y
-	y += 2
+	// TODO: Should g.X and g.Y be used?
+	y += g.Height - 14
 	if x < 0 || y < 0 || x >= g.Width || y >= g.Height {
 		return color.Alpha{}
 	}

@@ -118,7 +118,7 @@ func addGlyphs(img draw.Image) {
 			b := g.Bounds()
 			w, h := b.Dx(), b.Dy()
 			dstX := i * gw
-			dstY := j*gh + (gh - h)
+			dstY := j * gh
 			dstR := image.Rect(dstX, dstY, dstX+w, dstY+h)
 			p := g.Bounds().Min
 			draw.Draw(img, dstR, g, p, draw.Over)
