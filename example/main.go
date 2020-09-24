@@ -52,6 +52,7 @@ es:      Todos los seres humanos nacen libres e iguales en dignidad y derechos.
 eo:      Ĉiuj homoj estas denaske liberaj kaj egalaj laŭ digno kaj rajtoj.
 fr:      Tous les êtres humains naissent libres et égaux en dignité et en droits.
 got:     ᚨᛚᛚᚨᛁ ᛗᚨᚾᚾᚨ ᚠᚱᛖᛁᚺᚨᛚᛋ ᛃᚨᚺ ᛋᚨᛗᚨᛚᛖᛁᚲᛟ ᛁᚾ ᚹᚨᛁᚱᚦᛁᛞᚨᛁ ᛃᚨᚺ ᚱᚨᛁᚺᛏᛖᛁᛋ ᚹᚨᚢᚱᚦᚨᚾᛋ.
+he:      כל בני אדם נולדו בני חורין ושווים בערכם ובזכויותיהם.
 hy:      Բոլոր մարդիկ ծնվում են ազատ ու հավասար՝ իրենց արժանապատվությամբ և իրավունքներով:
 it:      Tutti gli esseri umani nascono liberi ed eguali in dignità e diritti.
 ja:      すべての人間は、生れながらにして自由であり、かつ、尊厳と権利とについて平等である。

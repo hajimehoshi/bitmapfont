@@ -60,6 +60,9 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		if unicode.IsSupplementalPunctuation(r) {
 			return true
 		}
+		if unicode.IsHebrew(r) {
+			return true
+		}
 		if 0x2100 <= r && r <= 0x218f {
 			// Letterlike Symbols
 			// Number Forms
@@ -105,9 +108,6 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		if !isOK(r) {
 			if unicode.IsOgham(r) {
 				// Ogham glyphs in misc-fixed are too condenced. Skip this.
-				continue
-			}
-			if unicode.IsHebrew(r) {
 				continue
 			}
 			if unicode.IsThai(r) {
