@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"image"
 	"image/color"
+	"unicode"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
@@ -169,14 +170,15 @@ func (f *Face) GlyphBounds(r rune) (bounds fixed.Rectangle26_6, advance fixed.In
 
 func (f *Face) GlyphAdvance(r rune) (advance fixed.Int26_6, ok bool) {
 	if r >= 0x10000 {
-		return
+		return 0, false
 	}
-	advance = fixed.I(f.runeWidth(r))
-	ok = true
-	return
+	return fixed.I(f.runeWidth(r)), true
 }
 
 func (f *Face) Kern(r0, r1 rune) fixed.Int26_6 {
+	if unicode.Is(unicode.Mn, r1) {
+		return -fixed.I(f.runeWidth(r1))
+	}
 	return 0
 
 }

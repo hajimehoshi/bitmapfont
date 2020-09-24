@@ -23,11 +23,13 @@ import (
 	"image/draw"
 	"image/png"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/pkg/browser"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
+	"golang.org/x/text/language"
 
 	"github.com/hajimehoshi/bitmapfont/v2"
 )
@@ -43,6 +45,7 @@ func run() error {
 	text := `en:      All human beings are born free and equal in dignity and rights.
 en-Brai: ⠠⠁⠇⠇⠀⠓⠥⠍⠁⠝⠀⠃⠑⠬⠎⠀⠜⠑⠀⠃⠕⠗⠝⠀⠋⠗⠑⠑⠀⠯⠀⠑⠟⠥⠁⠇⠀⠔⠀⠙⠊⠛⠝⠰⠽⠀⠯⠀⠐⠗⠎⠲
 ang:     Ealle fīras sind boren frēo ond geefenlican in ār ond riht.
+ar:      يولد جميع الناس أحرارًا متساوين في الكرامة والحقوق.
 de:      Alle Menschen sind frei und gleich an Würde und Rechten geboren.
 el:      'Ολοι οι άνθρωποι γεννιούνται ελεύθεροι και ίσοι στην αξιοπρέπεια και τα δικαιώματα.
 es:      Todos los seres humanos nacen libres e iguales en dignidad y derechos.
@@ -87,13 +90,13 @@ vi:      Tất cả mọi người sinh ra đều được tự do và bình đ�
 			path = "test.png"
 		}
 	}
-	if err := outputImageFile(text, *flagTest, path); err != nil {
+	if err := outputImageFile(text, *flagTest, path, !*flagTest); err != nil {
 		return err
 	}
 	return nil
 }
 
-func outputImageFile(text string, grid bool, path string) error {
+func outputImageFile(text string, grid bool, path string, presentation bool) error {
 	const (
 		offsetX = 8
 		offsetY = 8
@@ -148,9 +151,21 @@ func outputImageFile(text string, grid bool, path string) error {
 		Dot:  fixed.P(dotX+offsetX, dotY+offsetY),
 	}
 
+	langRe := regexp.MustCompile(`^[a-zA-Z0-9-]+`)
+
 	for _, l := range strings.Split(text, "\n") {
-		d.DrawString(l)
+		if presentation {
+			if langstr := langRe.FindString(l); langstr != "" {
+				lang, err := language.Parse(langstr)
+				if err != nil {
+					return err
+				}
+				rs := bitmapfont.PresentationForms([]rune(l), bitmapfont.DirectionLeftToRight, lang)
+				l = string(rs)
+			}
+		}
 		d.Dot.X = fixed.I(dotX + offsetX)
+		d.DrawString(l)
 		d.Dot.Y += f.Metrics().Height
 	}
 
