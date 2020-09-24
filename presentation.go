@@ -205,7 +205,17 @@ const (
 )
 
 // PresentationForms returns runes as presentation forms in order to render it easily.
-func PresentationForms(input []rune, defaultDirection Direction, lang language.Tag) []rune {
+//
+// PresentationForms mainly converts RTL texts into LTR glyphs for presentation.
+// The result can be passed to e.g., golang.org/x/image.Drawer's DrawString.
+// PresentationForms should work with texts whose directions are mixed, but the strict bidirectional algorithm [1]
+// is not implemented yet.
+//
+// lang represents a language that is a hint to compose the representation forms.
+// lang is not used in the implementation yet, but might be used in the future.
+//
+// [1] https://unicode.org/reports/tr9/
+func PresentationForms(input string, defaultDirection Direction, lang language.Tag) string {
 	canConnectBefore := func(r rune) bool {
 		f, ok := arabicLetterTable[r]
 		if !ok {
@@ -381,5 +391,5 @@ func PresentationForms(input []rune, defaultDirection Direction, lang language.T
 			}
 		}
 	}
-	return result
+	return string(result)
 }
