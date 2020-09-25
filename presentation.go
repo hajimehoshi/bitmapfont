@@ -190,14 +190,14 @@ var arabicLetterTable = map[rune]arabicLetterPresentationForms{
 type Direction int
 
 const (
-	DirectionLeftToRight = iota
+	DirectionLeftToRight Direction = iota
 	DirectionRightToLeft
 )
 
 type arabicForm int
 
 const (
-	arabicFormNeutral = iota
+	arabicFormNeutral arabicForm = iota
 	arabicFormIsolated
 	arabicFormInitial
 	arabicFormMedial
