@@ -246,18 +246,24 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 	// TODO: Treat ZWS correctly
 
 	var runeWithForms []runeWithForm
-	for i, r := range input {
+	for _, r := range input {
 		if _, ok := arabicLetterTable[r]; !ok {
 			runeWithForms = append(runeWithForms, runeWithForm{r: r})
 			continue
 		}
 
 		var prev runeWithForm
-		if i > 0 {
-			prev = runeWithForms[len(runeWithForms)-1]
+		prevIdx := len(runeWithForms) - 1
+		for ; prevIdx >= 0; prevIdx-- {
+			prev = runeWithForms[prevIdx]
+			// Nonspacing mark should not be involved in the connection algorithm.
+			if unicode.Is(unicode.Mn, prev.r) {
+				continue
+			}
+			break
 		}
 
-		if prev.form == arabicFormNeutral {
+		if prevIdx == -1 || prev.form == arabicFormNeutral {
 			runeWithForms = append(runeWithForms, runeWithForm{r: r, form: arabicFormIsolated})
 			continue
 		}
@@ -274,11 +280,11 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 			continue
 		}
 		if prev.form == arabicFormIsolated {
-			runeWithForms[len(runeWithForms)-1].form = arabicFormInitial
+			runeWithForms[prevIdx].form = arabicFormInitial
 			runeWithForms = append(runeWithForms, runeWithForm{r: r, form: arabicFormFinal})
 			continue
 		}
-		runeWithForms[len(runeWithForms)-1].form = arabicFormMedial
+		runeWithForms[prevIdx].form = arabicFormMedial
 		runeWithForms = append(runeWithForms, runeWithForm{r: r, form: arabicFormFinal})
 	}
 
@@ -341,6 +347,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 			dir1 = dir0
 		default:
 			// TODO: Implement control characters
+			dir1 = dir0
 		}
 
 		if prev != nil && prev.dir0 == dir0 && prev.dir1 == dir1 {
@@ -391,5 +398,6 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 			}
 		}
 	}
+
 	return string(result)
 }
