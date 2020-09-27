@@ -66,9 +66,6 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		if unicode.IsGeorgian(r) {
 			return true
 		}
-		if unicode.IsOgham(r) {
-			return true
-		}
 		if unicode.IsRunic(r) {
 			return true
 		}
