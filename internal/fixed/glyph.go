@@ -51,7 +51,40 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		return nil, err
 	}
 	isOK := func(r rune) bool {
-		if unicode.IsEuropian(r) {
+		if unicode.IsLatin(r) {
+			return true
+		}
+		if unicode.IsGreek(r) {
+			return true
+		}
+		if unicode.IsCyrillic(r) {
+			return true
+		}
+		if unicode.IsArmenian(r) {
+			return true
+		}
+		if unicode.IsGeorgian(r) {
+			return true
+		}
+		if unicode.IsOgham(r) {
+			return true
+		}
+		if unicode.IsRunic(r) {
+			return true
+		}
+		if 0x0300 <= r && r <= 0x036f {
+			// [Inherited]
+			// Combining Diacritical Marks
+			return true
+		}
+		if 0x20a0 <= r && r <= 0x20cf {
+			// [Common]
+			// Currency Symbols
+			return true
+		}
+		if 0x20d0 <= r && r <= 0x20ff {
+			// [Inherited]
+			// Combining Diacritical Marks for Symbols
 			return true
 		}
 		if unicode.IsGeneralPunctuation(r) {

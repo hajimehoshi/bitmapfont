@@ -170,46 +170,6 @@ func IsRunic(r rune) bool {
 	return false
 }
 
-func IsEuropian(r rune) bool {
-	if IsLatin(r) {
-		return true
-	}
-	if IsGreek(r) {
-		return true
-	}
-	if IsCyrillic(r) {
-		return true
-	}
-	if IsArmenian(r) {
-		return true
-	}
-	if IsGeorgian(r) {
-		return true
-	}
-	if IsOgham(r) {
-		return true
-	}
-	if IsRunic(r) {
-		return true
-	}
-	if 0x0300 <= r && r <= 0x036f {
-		// [Inherited]
-		// Combining Diacritical Marks
-		return true
-	}
-	if 0x20a0 <= r && r <= 0x20cf {
-		// [Common]
-		// Currency Symbols
-		return true
-	}
-	if 0x20d0 <= r && r <= 0x20ff {
-		// [Inherited]
-		// Combining Diacritical Marks for Symbols
-		return true
-	}
-	return false
-}
-
 func IsGeneralPunctuation(r rune) bool {
 	if 0x2000 <= r && r <= 0x206f {
 		return true
