@@ -2,6 +2,8 @@
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/hajimehoshi/bitmapfont/v2)](https://pkg.go.dev/github.com/hajimehoshi/bitmapfont/v2)
 
+Package bitmapfont offers a font.Face value of some bitmap fonts.
+
 ## 12px glyphs (`Face` / `FaceEA`)
 
 ![Example](example/example.png)
@@ -9,8 +11,6 @@
 The `EA` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
 
 ## Sources
-
-Package bitmapfont offers a font.Face value of some bitmap fonts.
 
    * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
    * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
