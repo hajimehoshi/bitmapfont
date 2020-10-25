@@ -21,6 +21,8 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
 )
 
 const (
@@ -111,8 +113,38 @@ func init() {
 }
 
 func Glyph(r rune) (image.Image, bool) {
-	if img, ok := images[r]; ok {
-		return img, true
+	const (
+		arabicComma        = '\u060c'
+		arabicSemicolon    = '\u061b'
+		arabicQuestionMark = '\u061f'
+	)
+
+	switch r {
+	case arabicComma:
+		if g, ok := fixed.Glyph(',', 12); ok {
+			return rotatedImage{
+				img:     &g,
+				originX: 3,
+				originY: 11,
+			}, true
+		}
+	case arabicSemicolon:
+		if g, ok := fixed.Glyph(';', 12); ok {
+			return rotatedImage{
+				img:     &g,
+				originX: 3,
+				originY: 8,
+				shiftY:  1,
+			}, true
+		}
+	case arabicQuestionMark:
+		if g, ok := fixed.Glyph('?', 12); ok {
+			return mirroredImage{&g}, true
+		}
+	default:
+		if img, ok := images[r]; ok {
+			return img, true
+		}
 	}
 	return nil, false
 }
