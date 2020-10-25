@@ -33,6 +33,8 @@ type arabicLetterPresentationForms struct {
 var arabicLetterTable = map[rune]arabicLetterPresentationForms{
 	// ARABIC LETTER HAMZA
 	0x0621: {isolated: 0xFE80, initial: 0, medial: 0, final: 0},
+	// ARABIC LETTER ALEF WITH MADDA ABOVE
+	0x0622: {isolated: 0xFE81, initial: 0, medial: 0, final: 0xFE82},
 	// ARABIC LETTER ALEF WITH HAMZA ABOVE
 	0x0623: {isolated: 0xFE83, initial: 0, medial: 0, final: 0xFE84},
 	// ARABIC LETTER WAW WITH HAMZA ABOVE
