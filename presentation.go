@@ -206,6 +206,11 @@ const (
 	arabicFormFinal
 )
 
+type runeWithForm struct {
+	r    rune
+	form arabicForm
+}
+
 // PresentationForms returns runes as presentation forms in order to render it easily.
 //
 // PresentationForms mainly converts RTL texts into LTR glyphs for presentation.
@@ -238,11 +243,6 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 			return false
 		}
 		return f.medial != 0
-	}
-
-	type runeWithForm struct {
-		r    rune
-		form arabicForm
 	}
 
 	// TODO: Treat ZWS correctly
@@ -291,7 +291,16 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 	}
 
 	var runes []rune
-	for _, rf := range runeWithForms {
+	for i := 0; i < len(runeWithForms); i++ {
+		if i < len(runeWithForms) - 1 {
+			if r, ok := processLigature(runeWithForms[i], runeWithForms[i+1]); ok {
+				i++
+				runes = append(runes, r)
+				continue
+			}
+		}
+
+		rf := runeWithForms[i]
 		var r rune
 		switch rf.form {
 		case arabicFormNeutral:
@@ -402,4 +411,51 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 	}
 
 	return string(result)
+}
+
+// processLigature returns a ligature for the runes r1 and r2 when possible.
+// processLigature processes only part of Arabic ligatures for this package's glyphs.
+func processLigature(r1, r2 runeWithForm) (rune, bool){
+	const (
+		arabicLetterHam                = 0x0644
+		arabicLetterAlefWithMaddaAbove = 0x0622
+		arabicLetterAlefWithHamzaAbove = 0x0623
+		arabicLetterAlefWithHamzaBelow = 0x0625
+		arabicLetterAlef               = 0x0627
+	)
+
+	if r1.r != arabicLetterHam {
+		return 0, false
+	}
+	switch r2.r {
+	case arabicLetterAlefWithMaddaAbove:
+		switch r1.form {
+		case arabicFormInitial:
+			return 0xFEF5, true
+		case arabicFormMedial:
+			return 0xFEF6, true
+		}
+	case arabicLetterAlefWithHamzaAbove:
+		switch r1.form {
+		case arabicFormInitial:
+			return 0xFEF7, true
+		case arabicFormMedial:
+			return 0xFEF8, true
+		}
+	case arabicLetterAlefWithHamzaBelow:
+		switch r1.form {
+		case arabicFormInitial:
+			return 0xFEF9, true
+		case arabicFormMedial:
+			return 0xFEFA, true
+		}
+	case arabicLetterAlef:
+		switch r1.form {
+		case arabicFormInitial:
+			return 0xFEFB, true
+		case arabicFormMedial:
+			return 0xFEFC, true
+		}
+	}
+	return 0, false
 }
