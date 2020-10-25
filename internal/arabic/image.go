@@ -40,11 +40,9 @@ func (m mirroredImage) At(x, y int) color.Color {
 }
 
 type rotatedImage struct {
-	img     image.Image
-	originX int
-	originY int
-	shiftX  int
-	shiftY  int
+	img    image.Image
+	shiftX int
+	shiftY int
 }
 
 func (r rotatedImage) ColorModel() color.Model {
@@ -59,12 +57,8 @@ func (r rotatedImage) At(x, y int) color.Color {
 	b := r.Bounds()
 	x -= b.Min.X
 	y -= b.Min.Y
-	x -= r.originX
-	y -= r.originY
-	x = -x
-	y = -y
-	x += r.originX
-	y += r.originY
+	x = b.Dx() - x
+	y = b.Dy() - y
 	x += b.Min.X
 	y += b.Min.Y
 	x += r.shiftX
