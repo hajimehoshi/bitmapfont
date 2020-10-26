@@ -36,7 +36,7 @@ var (
 )
 
 func subImage(img image.Image, x, y int) image.Image {
-	const yoffset = 2
+	const yoffset = 3
 
 	var wide bool
 
