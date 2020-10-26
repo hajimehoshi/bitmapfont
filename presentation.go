@@ -292,7 +292,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 
 	var runes []rune
 	for i := 0; i < len(runeWithForms); i++ {
-		if i < len(runeWithForms) - 1 {
+		if i < len(runeWithForms)-1 {
 			if r, ok := processLigature(runeWithForms[i], runeWithForms[i+1]); ok {
 				i++
 				runes = append(runes, r)
@@ -415,7 +415,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 
 // processLigature returns a ligature for the runes r1 and r2 when possible.
 // processLigature processes only part of Arabic ligatures for this package's glyphs.
-func processLigature(r1, r2 runeWithForm) (rune, bool){
+func processLigature(r1, r2 runeWithForm) (rune, bool) {
 	const (
 		arabicLetterHam                = 0x0644
 		arabicLetterAlefWithMaddaAbove = 0x0622

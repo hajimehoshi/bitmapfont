@@ -20,7 +20,8 @@ import (
 )
 
 type mirroredImage struct {
-	img image.Image
+	img    image.Image
+	shiftX int
 }
 
 func (m mirroredImage) ColorModel() color.Model {
@@ -36,6 +37,7 @@ func (m mirroredImage) At(x, y int) color.Color {
 	x -= b.Min.X
 	x = b.Dx() - x
 	x += b.Min.X
+	x += m.shiftX
 	return m.img.At(x, y)
 }
 
