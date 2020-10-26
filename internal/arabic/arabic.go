@@ -124,7 +124,7 @@ func Glyph(r rune) (image.Image, bool) {
 		if g, ok := fixed.Glyph(',', 12); ok {
 			return rotatedImage{
 				img:    &g,
-				shiftX: -2,
+				shiftX: -1,
 				shiftY: 7,
 			}, true
 		}
@@ -132,7 +132,7 @@ func Glyph(r rune) (image.Image, bool) {
 		if g, ok := fixed.Glyph(';', 12); ok {
 			return rotatedImage{
 				img:    &g,
-				shiftX: -2,
+				shiftX: -1,
 				shiftY: 2,
 			}, true
 		}
@@ -140,7 +140,7 @@ func Glyph(r rune) (image.Image, bool) {
 		if g, ok := fixed.Glyph('?', 12); ok {
 			return mirroredImage{
 				img:    &g,
-				shiftX: -2,
+				shiftX: -1,
 			}, true
 		}
 	default:
