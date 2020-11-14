@@ -417,14 +417,14 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 // processLigature processes only part of Arabic ligatures for this package's glyphs.
 func processLigature(r1, r2 runeWithForm) (rune, bool) {
 	const (
-		arabicLetterHam                = 0x0644
+		arabicLetterLam                = 0x0644
 		arabicLetterAlefWithMaddaAbove = 0x0622
 		arabicLetterAlefWithHamzaAbove = 0x0623
 		arabicLetterAlefWithHamzaBelow = 0x0625
 		arabicLetterAlef               = 0x0627
 	)
 
-	if r1.r != arabicLetterHam {
+	if r1.r != arabicLetterLam {
 		return 0, false
 	}
 	switch r2.r {
