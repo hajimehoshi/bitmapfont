@@ -205,6 +205,16 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		return nil, fmt.Errorf("mplus: FULLWIDTH TILDE (0x%x) not found", uniFullwidthTilde)
 	}
 	m[uniWaveDash] = m[uniFullwidthTilde]
+
+	// https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP932.TXT
+	// According to CP932.TXT, a fullwidth dash is mapped to U+2015, not U+2014. This is a known issue.
+	// As their glyphs are very similar, use the same glyphs as U+2015 for U+2014.
+	const (
+		uniEmDash        = 0x2014
+		uniHorizontalBar = 0x2015
+	)
+	m[uniEmDash] = m[uniHorizontalBar]
+
 	return m, nil
 }
 
