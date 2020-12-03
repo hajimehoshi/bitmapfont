@@ -48,7 +48,7 @@ func abs(x int) int {
 }
 
 func (g *Glyph) Bounds() image.Rectangle {
-	return image.Rect(0, 0, g.Width+abs(g.X), g.Height+abs(g.Y))
+	return image.Rect(0, 0, g.Width+abs(g.X), 16)
 }
 
 func (g *Glyph) At(x, y int) color.Color {

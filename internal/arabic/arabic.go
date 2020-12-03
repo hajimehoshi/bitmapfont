@@ -125,7 +125,7 @@ func Glyph(r rune) (image.Image, bool) {
 			return rotatedImage{
 				img:    &g,
 				shiftX: -1,
-				shiftY: 7,
+				shiftY: 6,
 			}, true
 		}
 	case arabicSemicolon:
@@ -133,7 +133,7 @@ func Glyph(r rune) (image.Image, bool) {
 			return rotatedImage{
 				img:    &g,
 				shiftX: -1,
-				shiftY: 2,
+				shiftY: 1,
 			}, true
 		}
 	case arabicQuestionMark:
