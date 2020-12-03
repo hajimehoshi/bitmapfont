@@ -31,12 +31,14 @@ import (
 	"github.com/hajimehoshi/bitmapfont/v2/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/mplus"
+	"github.com/hajimehoshi/bitmapfont/v2/internal/wqi"
 )
 
 var (
 	flagWidths   = flag.Bool("widths", false, "output widths infomation")
 	flagOutput   = flag.String("output", "", "output file")
 	flagEastAsia = flag.Bool("eastasia", false, "prefer east Asia punctuations")
+	flagChinese  = flag.Bool("chinese", false, "prefer Chiinese glyphs")
 )
 
 const (
@@ -52,6 +54,7 @@ const (
 	fontTypeMPlus
 	fontTypeBaekmuk
 	fontTypeArabic
+	fontTypeWqi
 )
 
 func getFontType(r rune) fontType {
@@ -75,6 +78,11 @@ func getFontType(r rune) fontType {
 
 	if _, ok := fixed.Glyph(r, 12); ok {
 		return fontTypeFixed
+	}
+	if *flagChinese {
+		if _, ok := wqi.Glyph(r); ok {
+			return fontTypeWqi
+		}
 	}
 	if _, ok := mplus.Glyph(r, 12); ok {
 		return fontTypeMPlus
@@ -109,6 +117,11 @@ func getGlyph(r rune) (image.Image, bool) {
 		}
 	case fontTypeArabic:
 		g, ok := arabic.Glyph(r)
+		if ok {
+			return g, true
+		}
+	case fontTypeWqi:
+		g, ok := wqi.Glyph(r)
 		if ok {
 			return g, true
 		}

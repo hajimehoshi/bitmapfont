@@ -25,4 +25,7 @@ package bitmapfont
 //go:generate go run -tags=generate ./internal/gen -eastasia -output /tmp/compressedFontAlphaFaceEA
 //go:generate file2byteslice -input /tmp/compressedFontAlphaFaceEA -output faceea.go -package bitmapfont -var compressedFontAlphaFaceEA
 
+//go:generate go run -tags=generate ./internal/gen -chinese -output /tmp/compressedFontAlphaFaceChinese
+//go:generate file2byteslice -input /tmp/compressedFontAlphaFaceChinese -output facechinese.go -package bitmapfont -var compressedFontAlphaFaceChinese
+
 //go:generate gofmt -s -w .
