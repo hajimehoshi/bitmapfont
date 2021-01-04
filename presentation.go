@@ -246,8 +246,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 	}
 
 	// TODO: Treat ZWS correctly
-
-	var runeWithForms []runeWithForm
+	runeWithForms := make([]runeWithForm, 0, len([]rune(input)))
 	for _, r := range input {
 		if _, ok := arabicLetterTable[r]; !ok {
 			runeWithForms = append(runeWithForms, runeWithForm{r: r})
@@ -290,7 +289,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 		runeWithForms = append(runeWithForms, runeWithForm{r: r, form: arabicFormFinal})
 	}
 
-	var runes []rune
+	runes := make([]rune, 0, len(runeWithForms))
 	for i := 0; i < len(runeWithForms); i++ {
 		if i < len(runeWithForms)-1 {
 			if r, ok := processLigature(runeWithForms[i], runeWithForms[i+1]); ok {
@@ -326,7 +325,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 		dir0 Direction
 		dir1 Direction
 	}
-	var runesWithDirs []*runesWithDir
+	runesWithDirs := make([]*runesWithDir, 0, len(runes))
 	for _, r := range runes {
 		p, _ := bidi.LookupRune(r)
 		var dir0, dir1 Direction
@@ -379,7 +378,7 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 		})
 	}
 
-	var result []rune
+	result := make([]rune, 0, len(runesWithDirs))
 	for _, rd := range runesWithDirs {
 		switch rd.dir1 {
 		case DirectionLeftToRight:
