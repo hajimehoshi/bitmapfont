@@ -211,10 +211,31 @@ type runeWithForm struct {
 }
 
 func reverseRunes(runes []rune) {
-	for i := 0; i < len(runes)/2; i++ {
-		j := len(runes) - i - 1
-		runes[i], runes[j] = runes[j], runes[i]
+	result := make([]rune, 0, len(runes))
+
+	var marks []rune
+	for i := range runes {
+		r := runes[len(runes)-i-1]
+
+		// Place the mark character in the logically correct position.
+		// Accumulate marks until the current character is not a mark.
+		if unicode.Is(unicode.Mn, r) {
+			marks = append(marks, r)
+			continue
+		}
+
+		result = append(result, r)
+		for i := range marks {
+			result = append(result, marks[len(marks)-i-1])
+		}
+		marks = marks[:0]
 	}
+
+	for i := range marks {
+		result = append(result, marks[len(marks)-i-1])
+	}
+
+	copy(runes, result)
 }
 
 // PresentationForms returns runes as presentation forms in order to render it easily.
