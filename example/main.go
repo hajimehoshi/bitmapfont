@@ -162,7 +162,6 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 					return err
 				}
 				l = bitmapfont.PresentationForms(l, bitmapfont.DirectionLeftToRight, lang)
-				//l = bitmapfont.PresentationForms(l, bitmapfont.DirectionRightToLeft, lang)
 			}
 		}
 		d.Dot.X = fixed.I(dotX + offsetX)
