@@ -15,7 +15,6 @@
 package bitmapfont
 
 import (
-	"sort"
 	"unicode"
 
 	"golang.org/x/text/language"
@@ -211,12 +210,18 @@ type runeWithForm struct {
 	form arabicForm
 }
 
+func reverseRunes(runes []rune) {
+	for i := 0; i < len(runes)/2; i++ {
+		j := len(runes) - i - 1
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+}
+
 // PresentationForms returns runes as presentation forms in order to render it easily.
 //
 // PresentationForms mainly converts RTL texts into LTR glyphs for presentation.
 // The result can be passed to e.g., golang.org/x/image.Drawer's DrawString.
-// PresentationForms should work with texts whose directions are mixed, but the strict bidirectional algorithm [1]
-// is not implemented yet.
+// PresentationForms should work with texts whose directions are mixed with Unicode Bidi algorithm [1].
 //
 // lang represents a language that is a hint to compose the representation forms.
 // lang is not used in the implementation yet, but might be used in the future.
@@ -316,100 +321,49 @@ func PresentationForms(input string, defaultDirection Direction, lang language.T
 		runes = append(runes, r)
 	}
 
-	// TODO: Implement the strict bidi algorithm.
-	// https://unicode.org/reports/tr9/
-
-	type runesWithDir struct {
-		idx  int
-		rs   []rune
-		dir0 Direction
-		dir1 Direction
+	var p bidi.Paragraph
+	dir := bidi.LeftToRight
+	switch defaultDirection {
+	case DirectionLeftToRight:
+		dir = bidi.LeftToRight
+	case DirectionRightToLeft:
+		dir = bidi.RightToLeft
 	}
-	runesWithDirs := make([]*runesWithDir, 0, len(runes))
-	for _, r := range runes {
-		p, _ := bidi.LookupRune(r)
-		var dir0, dir1 Direction
-		var prev *runesWithDir
-		if len(runesWithDirs) > 0 {
-			prev = runesWithDirs[len(runesWithDirs)-1]
-		}
-		if prev != nil {
-			dir0 = prev.dir0
-		} else {
-			dir0 = defaultDirection
-		}
-		switch p.Class() {
-		case bidi.L:
-			dir0 = DirectionLeftToRight
-			dir1 = dir0
-		case bidi.R, bidi.AL:
-			dir0 = DirectionRightToLeft
-			dir1 = dir0
-		case bidi.EN, bidi.ES, bidi.ET, bidi.AN, bidi.CS, bidi.BN:
-			// Weak
-			dir1 = DirectionLeftToRight
-		case bidi.B, bidi.S, bidi.WS, bidi.ON:
-			// Neutral
-			dir1 = dir0
-		case bidi.NSM:
-			// Non-spacing mark is weak, but treat this as nutral.
-			// TODO: Is this correct?
-			dir1 = dir0
-		default:
-			// TODO: Implement control characters
-			dir1 = dir0
+	p.SetString(string(runes), bidi.DefaultDirection(dir))
+	o, err := p.Order()
+	if err != nil {
+		// TODO: Return an error
+		panic(err)
+	}
+	n := o.NumRuns()
+
+	var rtlRunes []rune
+	for i := 0; i < n; i++ {
+		r := o.Run(i)
+		s, e := r.Pos()
+
+		switch r.Direction() {
+		case bidi.LeftToRight:
+		case bidi.RightToLeft:
+			reverseRunes(runes[s : e+1])
+		case bidi.Mixed:
+			// TODO: Implement this
+		case bidi.Neutral:
+			// TODO: Implement this
 		}
 
-		if prev != nil && prev.dir0 == dir0 && prev.dir1 == dir1 {
-			prev.rs = append(prev.rs, r)
-			continue
+		if defaultDirection == DirectionRightToLeft {
+			part := make([]rune, e-s+1)
+			copy(part, runes[s:e+1])
+			rtlRunes = append(part, rtlRunes...)
 		}
-		runesWithDirs = append(runesWithDirs, &runesWithDir{
-			idx:  len(runesWithDirs),
-			rs:   []rune{r},
-			dir0: dir0,
-			dir1: dir1,
-		})
 	}
 
 	if defaultDirection == DirectionRightToLeft {
-		sort.Slice(runesWithDirs, func(i, j int) bool {
-			return runesWithDirs[i].idx > runesWithDirs[j].idx
-		})
+		return string(rtlRunes)
 	}
 
-	result := make([]rune, 0, len(runesWithDirs))
-	for _, rd := range runesWithDirs {
-		switch rd.dir1 {
-		case DirectionLeftToRight:
-			for _, r := range rd.rs {
-				result = append(result, r)
-			}
-		case DirectionRightToLeft:
-			var marks []rune
-			for i := range rd.rs {
-				r := rd.rs[len(rd.rs)-i-1]
-
-				// Place the mark character in the logically correct position.
-				// Accumulate marks until the current character is not a mark.
-				if unicode.Is(unicode.Mn, r) {
-					marks = append(marks, r)
-					continue
-				}
-
-				result = append(result, r)
-				for i := range marks {
-					result = append(result, marks[len(marks)-i-1])
-				}
-				marks = nil
-			}
-			for i := range marks {
-				result = append(result, marks[len(marks)-i-1])
-			}
-		}
-	}
-
-	return string(result)
+	return string(runes)
 }
 
 // processLigature returns a ligature for the runes r1 and r2 when possible.
