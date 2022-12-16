@@ -14,15 +14,15 @@
 
 // Package bitmapfont offers a font.Face value of some bitmap fonts.
 //
-//   * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
-//   * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
-//   * [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
-//   * Arabic glyphs by [@MansourSorosoro](https://twitter.com/MansourSorosoro) (Eternal Dream Arabization) (OFL-1.1)
+//   - [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
+//   - [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
+//   - [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
+//   - Arabic glyphs by [@MansourSorosoro](https://twitter.com/MansourSorosoro) (Eternal Dream Arabization) (OFL-1.1)
 package bitmapfont
 
 import (
-	"bytes"
 	"compress/gzip"
+	"embed"
 	"io/ioutil"
 
 	"golang.org/x/image/font"
@@ -30,6 +30,9 @@ import (
 
 	"github.com/hajimehoshi/bitmapfont/v2/internal/bitmap"
 )
+
+//go:embed data/*.bin
+var data embed.FS
 
 func init() {
 	const (
@@ -40,7 +43,13 @@ func init() {
 		dotY = 12
 	)
 
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlphaFace))
+	f, err := data.Open("data/face.bin")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	s, err := gzip.NewReader(f)
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +72,13 @@ func init() {
 		dotY = 12
 	)
 
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlphaFaceEA))
+	f, err := data.Open("data/faceea.bin")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	s, err := gzip.NewReader(f)
 	if err != nil {
 		panic(err)
 	}
