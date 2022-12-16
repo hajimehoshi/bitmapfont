@@ -18,7 +18,6 @@
 package bitmapfont
 
 import (
-	"bytes"
 	"compress/gzip"
 	"io/ioutil"
 
@@ -37,7 +36,13 @@ func init() {
 		dotY = 12
 	)
 
-	s, err := gzip.NewReader(bytes.NewReader(compressedFontAlphaFaceChinese))
+	f, err := data.Open("data/facezh.bin")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	s, err := gzip.NewReader(f)
 	if err != nil {
 		panic(err)
 	}
