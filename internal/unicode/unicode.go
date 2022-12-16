@@ -49,7 +49,7 @@ func IsLatin(r rune) bool {
 		// Latin Extended-E
 		return true
 	}
-	if 0xfb00 <= r && r <= 0xfb4f {
+	if 0xfb00 <= r && r <= 0xfb06 {
 		// Alphabetic Presentation Forms
 		return true
 	}

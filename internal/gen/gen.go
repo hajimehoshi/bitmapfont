@@ -32,6 +32,7 @@ import (
 	"github.com/hajimehoshi/bitmapfont/v2/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/mplus"
+	"github.com/hajimehoshi/bitmapfont/v2/internal/unicode"
 	"github.com/hajimehoshi/bitmapfont/v2/internal/wqi"
 )
 
@@ -59,6 +60,11 @@ const (
 )
 
 func getFontType(r rune) fontType {
+	// For Latin glyphs, M+ doesn't work. Use the fixed font whatever the face is.
+	if unicode.IsLatin(r) {
+		return fontTypeFixed
+	}
+
 	if 0x2500 <= r && r <= 0x257f {
 		// Box Drawing
 		// M+ defines a part of box drawing glyphs.

@@ -23,6 +23,8 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 	"golang.org/x/text/width"
+
+	iunicode "github.com/hajimehoshi/bitmapfont/v2/internal/unicode"
 )
 
 type BinaryImage struct {
@@ -95,6 +97,11 @@ func NewFace(image *BinaryImage, dotX, dotY fixed.Int26_6, eastAsiaWide bool) *F
 }
 
 func (f *Face) runeWidth(r rune) int {
+	// For Latin glyphs, M+ doesn't work. Use the fixed font whatever the face is.
+	if iunicode.IsLatin(r) {
+		return f.charHalfWidth()
+	}
+
 	if _, ok := wideRunes[r]; ok {
 		return f.charFullWidth()
 	}
