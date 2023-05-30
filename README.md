@@ -1,6 +1,6 @@
-# bitmapfont (v2)
+# bitmapfont (v3)
 
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/hajimehoshi/bitmapfont/v2)](https://pkg.go.dev/github.com/hajimehoshi/bitmapfont/v2)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/hajimehoshi/bitmapfont/v3)](https://pkg.go.dev/github.com/hajimehoshi/bitmapfont/v3)
 
 Package bitmapfont offers a font.Face value of some bitmap fonts.
 
