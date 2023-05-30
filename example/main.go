@@ -145,7 +145,7 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 		Dst:  dst,
 		Src:  image.NewUniform(color.Black),
 		Face: f,
-		Dot:  fixed.Point26_6{X: fixed.I(offsetX), Y: f.Metrics().Ascent+fixed.I(offsetY)},
+		Dot:  fixed.Point26_6{X: fixed.I(offsetX), Y: f.Metrics().Ascent + fixed.I(offsetY)},
 	}
 
 	langRe := regexp.MustCompile(`^[a-zA-Z0-9-]+`)
