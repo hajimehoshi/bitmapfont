@@ -28,7 +28,7 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 
-	"github.com/hajimehoshi/bitmapfont/v2/internal/bitmap"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/bitmap"
 )
 
 //go:embed data/*.bin
@@ -39,7 +39,7 @@ func init() {
 		imageWidth  = 12 * 256
 		imageHeight = 16 * 256
 
-		dotX = 4
+		dotX = 0
 		dotY = 12
 	)
 
@@ -68,7 +68,7 @@ func init() {
 		imageWidth  = 12 * 256
 		imageHeight = 16 * 256
 
-		dotX = 4
+		dotX = 0
 		dotY = 12
 	)
 

@@ -28,12 +28,12 @@ import (
 
 	"golang.org/x/text/width"
 
-	"github.com/hajimehoshi/bitmapfont/v2/internal/arabic"
-	"github.com/hajimehoshi/bitmapfont/v2/internal/baekmuk"
-	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
-	"github.com/hajimehoshi/bitmapfont/v2/internal/mplus"
-	"github.com/hajimehoshi/bitmapfont/v2/internal/unicode"
-	"github.com/hajimehoshi/bitmapfont/v2/internal/wqi"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/arabic"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/baekmuk"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/fixed"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/mplus"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/wqi"
 )
 
 var (

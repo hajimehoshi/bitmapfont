@@ -22,7 +22,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/hajimehoshi/bitmapfont/v2/internal/fixed"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/fixed"
 )
 
 const (

@@ -29,7 +29,7 @@ import (
 	"golang.org/x/image/math/fixed"
 	"golang.org/x/text/language"
 
-	"github.com/hajimehoshi/bitmapfont/v2"
+	"github.com/hajimehoshi/bitmapfont/v3"
 )
 
 var (
@@ -102,8 +102,6 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 	)
 
 	const (
-		dotX        = 4
-		dotY        = 12
 		glyphWidth  = 12
 		glyphHeight = 16
 	)
@@ -147,7 +145,7 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 		Dst:  dst,
 		Src:  image.NewUniform(color.Black),
 		Face: f,
-		Dot:  fixed.P(dotX+offsetX, dotY+offsetY),
+		Dot:  fixed.Point26_6{X: fixed.I(offsetX), Y: f.Metrics().Ascent+fixed.I(offsetY)},
 	}
 
 	langRe := regexp.MustCompile(`^[a-zA-Z0-9-]+`)
@@ -162,7 +160,7 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 				l = bitmapfont.PresentationForms(l, bitmapfont.DirectionLeftToRight, lang)
 			}
 		}
-		d.Dot.X = fixed.I(dotX + offsetX)
+		d.Dot.X = fixed.I(offsetX)
 		d.DrawString(l)
 		d.Dot.Y += f.Metrics().Height
 	}

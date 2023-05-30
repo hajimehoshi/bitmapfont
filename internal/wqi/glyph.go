@@ -19,7 +19,7 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/hajimehoshi/bitmapfont/v2/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/bdf"
 )
 
 func readBDF() (map[rune]*bdf.Glyph, error) {
