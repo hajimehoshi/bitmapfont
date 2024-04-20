@@ -13,7 +13,6 @@
 // limitations under the License.
 
 //go:build chinese
-// +build chinese
 
 package bitmapfont
 
