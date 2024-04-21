@@ -167,8 +167,8 @@ func (f *Face) GlyphBounds(r rune) (bounds fixed.Rectangle26_6, advance fixed.In
 		return
 	}
 	bounds = fixed.Rectangle26_6{
-		Min: fixed.Point26_6{-f.dotX, -f.dotY},
-		Max: fixed.Point26_6{-f.dotX + fixed.I(f.runeWidth(r)), -f.dotY + fixed.I(f.charHeight())},
+		Min: fixed.Point26_6{X: -f.dotX, Y: -f.dotY},
+		Max: fixed.Point26_6{X: -f.dotX + fixed.I(f.runeWidth(r)), Y: -f.dotY + fixed.I(f.charHeight())},
 	}
 	advance = fixed.I(f.runeWidth(r))
 	ok = true
