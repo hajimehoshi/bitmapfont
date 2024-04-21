@@ -23,7 +23,7 @@ package bitmapfont
 import (
 	"compress/gzip"
 	"embed"
-	"io/ioutil"
+	"io"
 	"path/filepath"
 
 	"golang.org/x/image/font"
@@ -57,7 +57,7 @@ func init() {
 	}
 	defer s.Close()
 
-	bits, err := ioutil.ReadAll(s)
+	bits, err := io.ReadAll(s)
 	if err != nil {
 		panic(err)
 	}
@@ -78,7 +78,7 @@ func init() {
 	}
 	defer s.Close()
 
-	bits, err := ioutil.ReadAll(s)
+	bits, err := io.ReadAll(s)
 	if err != nil {
 		panic(err)
 	}
