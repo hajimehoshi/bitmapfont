@@ -32,17 +32,18 @@ import (
 	"github.com/hajimehoshi/bitmapfont/v3/internal/bitmap"
 )
 
+const (
+	imageWidth  = 12 * 256
+	imageHeight = 16 * 256
+
+	dotX = 0
+	dotY = 12
+)
+
 //go:embed data/*.bin
 var data embed.FS
 
 func init() {
-	const (
-		imageWidth  = 12 * 256
-		imageHeight = 16 * 256
-
-		dotX = 0
-		dotY = 12
-	)
 
 	f, err := data.Open(filepath.Join("data", "face.bin"))
 	if err != nil {
@@ -65,14 +66,6 @@ func init() {
 }
 
 func init() {
-	const (
-		imageWidth  = 12 * 256
-		imageHeight = 16 * 256
-
-		dotX = 0
-		dotY = 12
-	)
-
 	f, err := data.Open(filepath.Join("data", "faceea.bin"))
 	if err != nil {
 		panic(err)
