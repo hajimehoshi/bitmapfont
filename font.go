@@ -44,7 +44,7 @@ var data embed.FS
 
 func init() {
 
-	f, err := data.Open("data/face.bin")
+	f, err := data.Open("data/face_ja.bin")
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func init() {
 }
 
 func init() {
-	f, err := data.Open("data/faceea.bin")
+	f, err := data.Open("data/face_ja_ea.bin")
 	if err != nil {
 		panic(err)
 	}

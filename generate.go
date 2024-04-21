@@ -16,9 +16,11 @@ package bitmapfont
 
 //go:generate go run -C=_gen . -widths -output ./../internal/bitmap/widths.go
 
-//go:generate go run -C=_gen . -output ./../data/face.bin
-//go:generate go run -C=_gen . -eastasia -output ./../data/faceea.bin
-//go:generate go run -C=_gen . -chinese -output ./../data/facezh.bin
-//go:generate go run -C=_gen . -eastasia -chinese -output ./../data/facezhea.bin
+//go:generate go run -C=_gen . -lang="ja" -output ./../data/face_ja.bin
+//go:generate go run -C=_gen . -lang="ja" -eastasia -output ./../data/face_ja_ea.bin
+//go:generate go run -C=_gen . -lang="zh-Hans" -output ./../data/face_zhhans.bin
+//go:generate go run -C=_gen . -lang="zh-Hans" -eastasia -output ./../data/face_zhhans_ea.bin
+//go:generate go run -C=_gen . -lang="zh-Hant" -output ./../data/face_zhhant.bin
+//go:generate go run -C=_gen . -lang="zh-Hant" -eastasia -output ./../data/face_zhhant_ea.bin
 
 //go:generate gofmt -s -w .

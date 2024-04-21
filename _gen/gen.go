@@ -26,6 +26,7 @@ import (
 	"golang.org/x/text/width"
 
 	"github.com/hajimehoshi/bitmapfont/v3/internal/arabic"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/ark"
 	"github.com/hajimehoshi/bitmapfont/v3/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/v3/internal/cubic11"
 	"github.com/hajimehoshi/bitmapfont/v3/internal/fixed"
@@ -37,7 +38,7 @@ var (
 	flagWidths   = flag.Bool("widths", false, "output widths infomation")
 	flagOutput   = flag.String("output", "", "output file")
 	flagEastAsia = flag.Bool("eastasia", false, "prefer east Asia punctuations")
-	flagChinese  = flag.Bool("chinese", false, "prefer Chiinese glyphs")
+	flagLang     = flag.String("lang", "ja", "language ('ja', 'zh-Hans', or 'zh-Hant')")
 )
 
 const (
@@ -54,6 +55,7 @@ const (
 	fontTypeBaekmuk
 	fontTypeArabic
 	fontTypeCubic11
+	fontTypeArk
 )
 
 func getFontType(r rune) fontType {
@@ -83,20 +85,23 @@ func getFontType(r rune) fontType {
 	if _, ok := fixed.Glyph(r, 12); ok {
 		return fontTypeFixed
 	}
-	if *flagChinese {
-		if _, ok := cubic11.Glyph(r); ok {
-			return fontTypeCubic11
-		}
+	if *flagLang == "ja" {
 		if _, ok := mplus.Glyph(r, 12); ok {
 			return fontTypeMPlus
+		}
+		if _, ok := cubic11.Glyph(r); ok {
+			return fontTypeCubic11
 		}
 	} else {
-		if _, ok := mplus.Glyph(r, 12); ok {
-			return fontTypeMPlus
-		}
 		if _, ok := cubic11.Glyph(r); ok {
 			return fontTypeCubic11
 		}
+		if _, ok := mplus.Glyph(r, 12); ok {
+			return fontTypeMPlus
+		}
+	}
+	if _, ok := ark.Glyph(r, *flagLang != "zh-Hant"); ok {
+		return fontTypeArk
 	}
 	if _, ok := baekmuk.Glyph(r, 12); ok {
 		return fontTypeBaekmuk
@@ -129,6 +134,10 @@ func getGlyph(r rune) (image.Image, bool) {
 		}
 	case fontTypeCubic11:
 		if g, ok := cubic11.Glyph(r); ok {
+			return g, true
+		}
+	case fontTypeArk:
+		if g, ok := ark.Glyph(r, *flagLang != "zh-Hant"); ok {
 			return g, true
 		}
 	default:

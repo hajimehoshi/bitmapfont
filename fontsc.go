@@ -25,7 +25,7 @@ import (
 )
 
 func init() {
-	f, err := data.Open("data/facezh.bin")
+	f, err := data.Open("data/face_zhhans.bin")
 	if err != nil {
 		panic(err)
 	}
@@ -43,12 +43,10 @@ func init() {
 	}
 
 	FaceSC = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
-
-	FaceTC = &tcFace{face: FaceSC}
 }
 
 func init() {
-	f, err := data.Open("data/facezhea.bin")
+	f, err := data.Open("data/face_zhhans_ea.bin")
 	if err != nil {
 		panic(err)
 	}
@@ -65,8 +63,6 @@ func init() {
 		panic(err)
 	}
 	FaceSCEA = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), true)
-
-	FaceTCEA = &tcFace{face: FaceSCEA}
 }
 
 var (

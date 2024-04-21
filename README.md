@@ -27,6 +27,7 @@ The only real difference between `SC` and `TC` is the position of punctuation ma
 
 ## Sources
 
+ * [Ark Pixel Font](https://ark-pixel-font.takwolf.com/) (OFL-1.1)
  * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
  * [Cubic 11](https://github.com/ACh-K/Cubic-11) (OFL-1.1)
  * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
