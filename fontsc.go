@@ -17,7 +17,6 @@ package bitmapfont
 import (
 	"compress/gzip"
 	"io"
-	"path/filepath"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
@@ -26,7 +25,7 @@ import (
 )
 
 func init() {
-	f, err := data.Open(filepath.Join("data", "facezh.bin"))
+	f, err := data.Open("data/facezh.bin")
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +48,7 @@ func init() {
 }
 
 func init() {
-	f, err := data.Open(filepath.Join("data", "facezhea.bin"))
+	f, err := data.Open("data/facezhea.bin")
 	if err != nil {
 		panic(err)
 	}
