@@ -6,7 +6,7 @@ Package `bitmapfont` provides font.Face values of 12px bitmap glyphs.
 
 ## API
 
-```
+```go
 var Face font.Face
 var FaceEA font.Face
 var FaceSC font.Face
@@ -27,11 +27,11 @@ The only real difference between `SC` and `TC` is the position of punctuation ma
 
 ## Sources
 
-   * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
-   * [Cubic 11](https://github.com/ACh-K/Cubic-11) (OFL-1.1)
-   * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
-   * [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
-   * Arabic glyphs by [@MansourSorosoro](https://twitter.com/MansourSorosoro) (Eternal Dream Arabization) (OFL-1.1)
+ * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
+ * [Cubic 11](https://github.com/ACh-K/Cubic-11) (OFL-1.1)
+ * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
+ * [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
+ * Arabic glyphs by [@MansourSorosoro](https://twitter.com/MansourSorosoro) (Eternal Dream Arabization) (OFL-1.1)
 
 There is one font face with glyph size 6x13 for halfwidth, and 12x13 for fullwidth so far.
 
@@ -49,17 +49,6 @@ acknowledgement appear in supporting documentation:
     Baekmuk Batang, Baekmuk Dotum, Baekmuk Gulim, and
     Baekmuk Headline are registered trademarks owned by
     Kim Jeong-Hwan.
-```
-
-## Cubic 11 License
-
-```
-These fonts are free software.
-Unlimited permission is granted to use, copy, and distribute them, with or without modification, either commercially or noncommercially.
-THESE FONTS ARE PROVIDED "AS IS" WITHOUT WARRANTY.
-此字型是免費的。
-無論您是否進行對本字型進行商業或非商業性修改，均可無限制地使用，複製和分發它們。
-本字型的衍生品之授權必須與此字型相同，且不作任何擔保。
 ```
 
 ## M+ Bitmap Font License
