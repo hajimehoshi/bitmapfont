@@ -123,7 +123,7 @@ func Glyph(r rune) (image.Image, bool) {
 	case arabicComma:
 		if g, ok := fixed.Glyph(',', 12); ok {
 			return rotatedImage{
-				img:    &g,
+				img:    g,
 				shiftX: -1,
 				shiftY: 6,
 			}, true
@@ -131,7 +131,7 @@ func Glyph(r rune) (image.Image, bool) {
 	case arabicSemicolon:
 		if g, ok := fixed.Glyph(';', 12); ok {
 			return rotatedImage{
-				img:    &g,
+				img:    g,
 				shiftX: -1,
 				shiftY: 1,
 			}, true
@@ -139,7 +139,7 @@ func Glyph(r rune) (image.Image, bool) {
 	case arabicQuestionMark:
 		if g, ok := fixed.Glyph('?', 12); ok {
 			return mirroredImage{
-				img:    &g,
+				img:    g,
 				shiftX: -1,
 			}, true
 		}

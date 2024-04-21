@@ -112,28 +112,23 @@ func getGlyph(r rune) (image.Image, bool) {
 	case fontTypeNone:
 		return nil, false
 	case fontTypeFixed:
-		g, ok := fixed.Glyph(r, 12)
-		if ok {
-			return &g, true
+		if g, ok := fixed.Glyph(r, 12); ok {
+			return g, true
 		}
 	case fontTypeMPlus:
-		g, ok := mplus.Glyph(r, 12)
-		if ok {
-			return &g, true
+		if g, ok := mplus.Glyph(r, 12); ok {
+			return g, true
 		}
 	case fontTypeBaekmuk:
-		g, ok := baekmuk.Glyph(r, 12)
-		if ok {
-			return &g, true
+		if g, ok := baekmuk.Glyph(r, 12); ok {
+			return g, true
 		}
 	case fontTypeArabic:
-		g, ok := arabic.Glyph(r)
-		if ok {
+		if g, ok := arabic.Glyph(r); ok {
 			return g, true
 		}
 	case fontTypeCubic11:
-		g, ok := cubic11.Glyph(r)
-		if ok {
+		if g, ok := cubic11.Glyph(r); ok {
 			return g, true
 		}
 	default:

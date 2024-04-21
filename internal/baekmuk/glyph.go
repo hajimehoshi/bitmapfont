@@ -122,10 +122,10 @@ func init() {
 	}
 }
 
-func Glyph(r rune, size int) (bdf.Glyph, bool) {
+func Glyph(r rune, size int) (*bdf.Glyph, bool) {
 	g, ok := glyphs[size][r]
 	if !ok {
-		return bdf.Glyph{}, false
+		return nil, false
 	}
-	return *g, true
+	return g, true
 }
