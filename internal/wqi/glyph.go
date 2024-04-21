@@ -22,6 +22,7 @@ import (
 	"runtime"
 
 	"github.com/hajimehoshi/bitmapfont/v3/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
 )
 
 func readBDF() (map[rune]*bdf.Glyph, error) {
@@ -52,18 +53,6 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 	return m, nil
 }
 
-func isCJKUnifiedIdeograph(r rune) bool {
-	// CJK Unified Ideographs
-	if 0x4E00 <= r && r <= 0x9FFF {
-		return true
-	}
-	// CJK Unified Ideographs Extension A
-	if 0x3400 <= r && r <= 0x4DBF {
-		return true
-	}
-	return false
-}
-
 var glyphs map[rune]*bdf.Glyph
 
 func init() {
@@ -75,7 +64,7 @@ func init() {
 }
 
 func Glyph(r rune) (*bdf.Glyph, bool) {
-	if !isCJKUnifiedIdeograph(r) {
+	if !unicode.IsCJKUnifiedIdeograph(r) {
 		return nil, false
 	}
 

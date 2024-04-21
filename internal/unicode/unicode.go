@@ -183,3 +183,15 @@ func IsSupplementalPunctuation(r rune) bool {
 	}
 	return false
 }
+
+func IsCJKUnifiedIdeograph(r rune) bool {
+	// CJK Unified Ideographs
+	if 0x4E00 <= r && r <= 0x9FFF {
+		return true
+	}
+	// CJK Unified Ideographs Extension A
+	if 0x3400 <= r && r <= 0x4DBF {
+		return true
+	}
+	return false
+}

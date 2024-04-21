@@ -23,6 +23,8 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 	"golang.org/x/image/math/fixed"
+
+	"github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
 )
 
 var face font.Face
@@ -53,18 +55,6 @@ func readTTF() (font.Face, error) {
 	return f, nil
 }
 
-func isCJKUnifiedIdeograph(r rune) bool {
-	// CJK Unified Ideographs
-	if 0x4E00 <= r && r <= 0x9FFF {
-		return true
-	}
-	// CJK Unified Ideographs Extension A
-	if 0x3400 <= r && r <= 0x4DBF {
-		return true
-	}
-	return false
-}
-
 func init() {
 	f, err := readTTF()
 	if err != nil {
@@ -74,7 +64,7 @@ func init() {
 }
 
 func Glyph(r rune) (image.Image, bool) {
-	if !isCJKUnifiedIdeograph(r) {
+	if !unicode.IsCJKUnifiedIdeograph(r) {
 		return nil, false
 	}
 
