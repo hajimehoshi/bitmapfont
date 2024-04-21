@@ -23,8 +23,6 @@ The `SC` version prefers simplified Chinese characters.
 
 The `TC` version prefers traditional Chinese characters.
 
-The only real difference between `SC` and `TC` is the position of punctuation marks.
-
 ## Sources
 
  * [Ark Pixel Font](https://ark-pixel-font.takwolf.com/) (OFL-1.1)

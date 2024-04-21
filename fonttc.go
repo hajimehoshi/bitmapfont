@@ -106,10 +106,8 @@ func (t *tcFace) Metrics() font.Metrics {
 
 var (
 	// FaceTC is a font.Face of the bitmap font (12px regular, prefer traditional Chinese characters).
-	// The actual difference from FaceSC is puctuations.
 	FaceTC font.Face
 
 	// FaceTCEA is a font.Face of the bitmap font (12px regular, prefer traditional Chinese characters and East Asia wide characters).
-	// The actual difference from FaceSCEA is puctuations.
 	FaceTCEA font.Face
 )
