@@ -1,4 +1,4 @@
-// Copyright 2018 Hajime Hoshi
+// Copyright 2024 Hajime Hoshi
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,44 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// This package is not used so far.
-
-package wqi
+package cubic11
 
 import (
+	"image"
 	"os"
 	"path/filepath"
 	"runtime"
 
-	"github.com/hajimehoshi/bitmapfont/v3/internal/bdf"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
+	"golang.org/x/image/math/fixed"
 )
 
-func readBDF() (map[rune]*bdf.Glyph, error) {
+var face font.Face
+
+func readTTF() (font.Face, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	// Download wqy-bitmapsong-bdf-1.0.0-RC1.tar.gz from
-	// https://sourceforge.net/projects/wqy/files/wqy-bitmapfont/1.0.0-RC1/
-	// This file is not in the repository due to the license issue.
-	f, err := os.Open(filepath.Join(dir, "wenquanyi_9pt.bdf"))
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	glyphs, err := bdf.Parse(f)
+	ttfContent, err := os.ReadFile(filepath.Join(dir, "Cubic_11_1.100_R.ttf"))
 	if err != nil {
 		return nil, err
 	}
 
-	m := map[rune]*bdf.Glyph{}
-
-	for _, g := range glyphs {
-		g.ShiftY -= 1
-		m[rune(g.Encoding)] = g
+	ttf, err := opentype.Parse(ttfContent)
+	if err != nil {
+		return nil, err
 	}
 
-	return m, nil
+	f, err := opentype.NewFace(ttf, &opentype.FaceOptions{
+		Size:    12,
+		DPI:     72,
+		Hinting: font.HintingNone,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return f, nil
 }
 
 func isCJKUnifiedIdeograph(r rune) bool {
@@ -64,24 +65,25 @@ func isCJKUnifiedIdeograph(r rune) bool {
 	return false
 }
 
-var glyphs map[rune]*bdf.Glyph
-
 func init() {
-	var err error
-	glyphs, err = readBDF()
+	f, err := readTTF()
 	if err != nil {
 		panic(err)
 	}
+	face = f
 }
 
-func Glyph(r rune) (*bdf.Glyph, bool) {
+func Glyph(r rune) (image.Image, bool) {
 	if !isCJKUnifiedIdeograph(r) {
 		return nil, false
 	}
 
-	g, ok := glyphs[r]
+	dr, img, _, _, ok := face.Glyph(fixed.Point26_6{}, r)
 	if !ok {
 		return nil, false
 	}
-	return g, true
+	aimg := img.(*image.Alpha)
+	aimg.Rect = aimg.Rect.Add(dr.Min).Add(image.Pt(-1, 11))
+
+	return aimg, true
 }

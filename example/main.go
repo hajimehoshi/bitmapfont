@@ -34,11 +34,17 @@ import (
 
 var (
 	flagTest     = flag.Bool("test", false, "test mode")
+	flagTestSC   = flag.Bool("test-sc", false, "test mode (simplified Chinese)")
+	flagTestTC   = flag.Bool("test-tc", false, "test mode (traditional Chinese)")
 	flagEastAsia = flag.Bool("eastasia", false, "East Asia")
 )
 
+func isTest() bool {
+	return *flagTest || *flagTestSC || *flagTestTC
+}
+
 func run() error {
-	// https://www.unicode.org/udhr/
+	// https://www.ohchr.org/en/human-rights/universal-declaration/universal-declaration-human-rights/about-universal-declaration-human-rights-translation-project
 	// https://omniglot.com/udhr/
 	text := `en:      All human beings are born free and equal in dignity and rights.
 en-Brai: ⠠⠁⠇⠇⠀⠓⠥⠍⠁⠝⠀⠃⠑⠬⠎⠀⠜⠑⠀⠃⠕⠗⠝⠀⠋⠗⠑⠑⠀⠯⠀⠑⠟⠥⠁⠇⠀⠔⠀⠙⠊⠛⠝⠰⠽⠀⠯⠀⠐⠗⠎⠲
@@ -64,6 +70,8 @@ sw:      Watu wote wamezaliwa huru, hadhi na haki zao ni sawa.
 tr:      Bütün insanlar hür, haysiyet ve haklar bakımından eşit doğarlar.
 uk:      Всі люди народжуються вільними і рівними у своїй гідності та правах.
 vi:      Tất cả mọi người sinh ra đều được tự do và bình đẳng về nhân phẩm và quyền.
+zh-Hans: 人人生而自由,在尊严和权利上一律平等。他们赋有理性和良心,并应以兄弟关系的精神相对待。
+zh-Hant: 人人生而自由，拉尊嚴脫仔權利上一律平等。伊拉有理性脫仔良心，並應以兄弟關係個精神相對待。
 `
 
 	if *flagTest {
@@ -82,20 +90,45 @@ vi:      Tất cả mọi người sinh ra đều được tự do và bình đ�
 	}
 
 	path := "example.png"
-	if *flagTest {
-		if *flagEastAsia {
-			path = "test_ea.png"
-		} else {
-			path = "test.png"
+	if isTest() {
+		var suffix string
+		if *flagTestSC {
+			suffix += "_zh_hans"
 		}
+		if *flagTestTC {
+			suffix += "_zh_hant"
+		}
+		if *flagEastAsia {
+			suffix += "_ea"
+		}
+		path = "test" + suffix + ".png"
 	}
-	if err := outputImageFile(text, *flagTest, path, !*flagTest); err != nil {
+	if err := outputImageFile(text, path); err != nil {
 		return err
 	}
 	return nil
 }
 
-func outputImageFile(text string, grid bool, path string, presentation bool) error {
+func defaultFace() font.Face {
+	if *flagTestSC {
+		if *flagEastAsia {
+			return bitmapfont.FaceSCEA
+		}
+		return bitmapfont.FaceSC
+	}
+	if *flagTestTC {
+		if *flagEastAsia {
+			return bitmapfont.FaceTCEA
+		}
+		return bitmapfont.FaceTC
+	}
+	if *flagEastAsia {
+		return bitmapfont.FaceEA
+	}
+	return bitmapfont.Face
+}
+
+func outputImageFile(text string, path string) error {
 	const (
 		offsetX = 8
 		offsetY = 8
@@ -106,17 +139,10 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 		glyphHeight = 16
 	)
 
-	var f font.Face
-	if *flagEastAsia {
-		f = bitmapfont.FaceEA
-	} else {
-		f = bitmapfont.Face
-	}
-
 	lines := strings.Split(strings.TrimSpace(text), "\n")
 	width := 0
 	for _, l := range lines {
-		w := int(font.MeasureString(f, l).Ceil())
+		w := int(font.MeasureString(defaultFace(), l).Ceil())
 		if width < w {
 			width = w
 		}
@@ -126,8 +152,8 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 	height := glyphHeight*len(lines) + offsetY*2
 
 	dst := image.NewRGBA(image.Rect(0, 0, width, height))
-	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.ZP, draw.Src)
-	if grid {
+	draw.Draw(dst, dst.Bounds(), image.NewUniform(color.White), image.Point{}, draw.Src)
+	if isTest() {
 		gray := color.RGBA{0xcc, 0xcc, 0xcc, 0xff}
 		for j := 0; j < 256; j++ {
 			for i := 0; i < 256; i++ {
@@ -136,7 +162,7 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 				}
 				x := i*glyphWidth + offsetX
 				y := j*glyphHeight + offsetY
-				draw.Draw(dst, image.Rect(x, y, x+glyphWidth, y+glyphHeight), image.NewUniform(gray), image.ZP, draw.Src)
+				draw.Draw(dst, image.Rect(x, y, x+glyphWidth, y+glyphHeight), image.NewUniform(gray), image.Point{}, draw.Src)
 			}
 		}
 	}
@@ -144,22 +170,39 @@ func outputImageFile(text string, grid bool, path string, presentation bool) err
 	d := font.Drawer{
 		Dst:  dst,
 		Src:  image.NewUniform(color.Black),
-		Face: f,
-		Dot:  fixed.Point26_6{X: fixed.I(offsetX), Y: f.Metrics().Ascent + fixed.I(offsetY)},
+		Face: defaultFace(),
+		Dot:  fixed.Point26_6{X: fixed.I(offsetX), Y: defaultFace().Metrics().Ascent + fixed.I(offsetY)},
 	}
 
 	langRe := regexp.MustCompile(`^[a-zA-Z0-9-]+`)
 
 	for _, l := range strings.Split(text, "\n") {
-		if presentation {
-			if langstr := langRe.FindString(l); langstr != "" {
-				lang, err := language.Parse(langstr)
-				if err != nil {
-					return err
+		langstr := langRe.FindString(l)
+		if !isTest() && langstr != "" {
+			lang, err := language.Parse(langstr)
+			if err != nil {
+				return err
+			}
+			l = bitmapfont.PresentationForms(l, bitmapfont.DirectionLeftToRight, lang)
+		}
+		f := defaultFace()
+		if !isTest() {
+			if strings.HasPrefix(langstr, "zh-Hans") {
+				if *flagEastAsia {
+					f = bitmapfont.FaceSCEA
+				} else {
+					f = bitmapfont.FaceSC
 				}
-				l = bitmapfont.PresentationForms(l, bitmapfont.DirectionLeftToRight, lang)
+			}
+			if strings.HasPrefix(langstr, "zh-Hant") {
+				if *flagEastAsia {
+					f = bitmapfont.FaceTCEA
+				} else {
+					f = bitmapfont.FaceTC
+				}
 			}
 		}
+		d.Face = f
 		d.Dot.X = fixed.I(offsetX)
 		d.DrawString(l)
 		d.Dot.Y += f.Metrics().Height
