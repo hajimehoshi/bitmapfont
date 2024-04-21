@@ -92,16 +92,19 @@ func getFontType(r rune) fontType {
 		if _, ok := cubic11.Glyph(r); ok {
 			return fontTypeCubic11
 		}
+		if _, ok := ark.Glyph(r, true); ok {
+			return fontTypeArk
+		}
 	} else {
 		if _, ok := cubic11.Glyph(r); ok {
 			return fontTypeCubic11
 		}
+		if _, ok := ark.Glyph(r, *flagLang != "zh-Hant"); ok {
+			return fontTypeArk
+		}
 		if _, ok := mplus.Glyph(r, 12); ok {
 			return fontTypeMPlus
 		}
-	}
-	if _, ok := ark.Glyph(r, *flagLang != "zh-Hant"); ok {
-		return fontTypeArk
 	}
 	if _, ok := baekmuk.Glyph(r, 12); ok {
 		return fontTypeBaekmuk
