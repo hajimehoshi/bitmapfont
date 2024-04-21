@@ -2,9 +2,9 @@
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/hajimehoshi/bitmapfont/v3)](https://pkg.go.dev/github.com/hajimehoshi/bitmapfont/v3)
 
-Package bitmapfont offers a font.Face value of some bitmap fonts.
+Package `bitmapfont` provides font.Face values of 12px bitmap glyphs.
 
-## 12px glyphs
+## API
 
 ```
 var Face font.Face
