@@ -24,6 +24,7 @@ import (
 	"compress/gzip"
 	"embed"
 	"io/ioutil"
+	"path/filepath"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
@@ -43,7 +44,7 @@ func init() {
 		dotY = 12
 	)
 
-	f, err := data.Open("data/face.bin")
+	f, err := data.Open(filepath.Join("data", "face.bin"))
 	if err != nil {
 		panic(err)
 	}
@@ -72,7 +73,7 @@ func init() {
 		dotY = 12
 	)
 
-	f, err := data.Open("data/faceea.bin")
+	f, err := data.Open(filepath.Join("data", "faceea.bin"))
 	if err != nil {
 		panic(err)
 	}
