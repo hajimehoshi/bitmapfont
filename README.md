@@ -6,7 +6,7 @@ Package bitmapfont offers a font.Face value of some bitmap fonts.
 
 ## 12px glyphs (`Face` / `FaceEA`)
 
-![Example](example/example.png)
+![Example](example.png)
 
 The `EA` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
 
