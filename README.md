@@ -4,11 +4,26 @@
 
 Package bitmapfont offers a font.Face value of some bitmap fonts.
 
-## 12px glyphs (`Face` / `FaceEA`)
+## 12px glyphs
+
+```
+var Face font.Face
+var FaceEA font.Face
+var FaceSC font.Face
+var FaceSCEA font.Face
+var FaceTC font.Face
+var FaceTCEA font.Face
+```
 
 ![Example](example.png)
 
 The `EA` version includes wide glyphs for the characters that have East Asian ambiguous widths (e.g., `※`, `…`, `α`).
+
+The `SC` version prefers simplified Chinese characters.
+
+The `TC` version prefers traditional Chinese characters.
+
+The only real difference between `SC` and `TC` is the position of punctuation marks.
 
 ## Sources
 
