@@ -33,7 +33,7 @@ func readTTF() (font.Face, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	ttfContent, err := os.ReadFile(filepath.Join(dir, "Cubic_11_1.100_R.ttf"))
+	ttfContent, err := os.ReadFile(filepath.Join(dir, "Cubic_11_1.200_R.ttf"))
 	if err != nil {
 		return nil, err
 	}
