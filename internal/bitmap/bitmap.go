@@ -187,7 +187,6 @@ func (f *Face) Kern(r0, r1 rune) fixed.Int26_6 {
 		return -fixed.I(f.runeWidth(r1))
 	}
 	return 0
-
 }
 
 func (f *Face) Metrics() font.Metrics {
