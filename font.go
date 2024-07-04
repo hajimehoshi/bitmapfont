@@ -16,68 +16,12 @@
 package bitmapfont
 
 import (
-	"compress/gzip"
-	"embed"
-	"io"
-
 	"golang.org/x/image/font"
-	"golang.org/x/image/math/fixed"
-
-	"github.com/hajimehoshi/bitmapfont/v3/internal/bitmap"
 )
 
-const (
-	imageWidth  = 12 * 256
-	imageHeight = 16 * 256
-
-	dotX = 0
-	dotY = 12
-)
-
-//go:embed data/*.bin
-var data embed.FS
-
 func init() {
-
-	f, err := data.Open("data/face_ja.bin")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	s, err := gzip.NewReader(f)
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	bits, err := io.ReadAll(s)
-	if err != nil {
-		panic(err)
-	}
-
-	Face = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
-}
-
-func init() {
-	f, err := data.Open("data/face_ja_ea.bin")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	s, err := gzip.NewReader(f)
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	bits, err := io.ReadAll(s)
-	if err != nil {
-		panic(err)
-	}
-
-	FaceEA = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), true)
+	Face = newDelayedFace("data/face_ja.bin")
+	FaceEA = newDelayedFace("data/face_ja_ea.bin")
 }
 
 var (

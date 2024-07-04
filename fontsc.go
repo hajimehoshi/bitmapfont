@@ -15,54 +15,12 @@
 package bitmapfont
 
 import (
-	"compress/gzip"
-	"io"
-
 	"golang.org/x/image/font"
-	"golang.org/x/image/math/fixed"
-
-	"github.com/hajimehoshi/bitmapfont/v3/internal/bitmap"
 )
 
 func init() {
-	f, err := data.Open("data/face_zhhans.bin")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	s, err := gzip.NewReader(f)
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	bits, err := io.ReadAll(s)
-	if err != nil {
-		panic(err)
-	}
-
-	FaceSC = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
-}
-
-func init() {
-	f, err := data.Open("data/face_zhhans_ea.bin")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	s, err := gzip.NewReader(f)
-	if err != nil {
-		panic(err)
-	}
-	defer s.Close()
-
-	bits, err := io.ReadAll(s)
-	if err != nil {
-		panic(err)
-	}
-	FaceSCEA = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), true)
+	FaceSC = newDelayedFace("data/face_zhhans.bin")
+	FaceSCEA = newDelayedFace("data/face_zhhans_ea.bin")
 }
 
 var (
