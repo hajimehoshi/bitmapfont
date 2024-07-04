@@ -22,7 +22,7 @@ import (
 	"image/draw"
 	"os"
 
-	"github.com/andybalholm/brotli"
+	"github.com/pierrec/lz4/v4"
 	"golang.org/x/text/width"
 
 	"github.com/hajimehoshi/bitmapfont/v3/internal/arabic"
@@ -193,8 +193,10 @@ func run() error {
 	}
 	defer fout.Close()
 
-	cw := brotli.NewWriterLevel(fout, brotli.BestCompression)
+	cw := lz4.NewWriter(fout)
 	defer cw.Close()
+
+	cw.Apply(lz4.CompressionLevelOption(lz4.Level9))
 
 	if _, err := cw.Write(as); err != nil {
 		return err

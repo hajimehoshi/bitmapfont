@@ -20,7 +20,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/andybalholm/brotli"
+	"github.com/pierrec/lz4/v4"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 
@@ -60,7 +60,7 @@ func (f *lazyFace) ensureInitialization() {
 		}
 		defer binFile.Close()
 
-		s := brotli.NewReader(binFile)
+		s := lz4.NewReader(binFile)
 
 		bits, err := io.ReadAll(s)
 		if err != nil {
