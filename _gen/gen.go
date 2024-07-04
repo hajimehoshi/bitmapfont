@@ -15,7 +15,6 @@
 package main
 
 import (
-	"compress/gzip"
 	"flag"
 	"fmt"
 	"image"
@@ -23,6 +22,7 @@ import (
 	"image/draw"
 	"os"
 
+	"github.com/andybalholm/brotli"
 	"golang.org/x/text/width"
 
 	"github.com/hajimehoshi/bitmapfont/v3/internal/arabic"
@@ -193,10 +193,7 @@ func run() error {
 	}
 	defer fout.Close()
 
-	cw, err := gzip.NewWriterLevel(fout, gzip.BestCompression)
-	if err != nil {
-		return err
-	}
+	cw := brotli.NewWriterLevel(fout, brotli.BestCompression)
 	defer cw.Close()
 
 	if _, err := cw.Write(as); err != nil {

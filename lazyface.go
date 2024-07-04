@@ -15,12 +15,12 @@
 package bitmapfont
 
 import (
-	"compress/gzip"
 	"embed"
 	"image"
 	"io"
 	"sync"
 
+	"github.com/andybalholm/brotli"
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 
@@ -60,11 +60,7 @@ func (f *lazyFace) ensureInitialization() {
 		}
 		defer binFile.Close()
 
-		s, err := gzip.NewReader(binFile)
-		if err != nil {
-			panic(err)
-		}
-		defer s.Close()
+		s := brotli.NewReader(binFile)
 
 		bits, err := io.ReadAll(s)
 		if err != nil {
