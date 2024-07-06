@@ -19,8 +19,8 @@ import (
 )
 
 func init() {
-	FaceSC = newDelayedFace("data/face_zhhans.bin")
-	FaceSCEA = newDelayedFace("data/face_zhhans_ea.bin")
+	FaceSC = newDelayedFace("data/face_zhhans.bin", false)
+	FaceSCEA = newDelayedFace("data/face_zhhans_ea.bin", true)
 }
 
 var (

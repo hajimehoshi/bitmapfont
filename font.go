@@ -20,8 +20,8 @@ import (
 )
 
 func init() {
-	Face = newDelayedFace("data/face_ja.bin")
-	FaceEA = newDelayedFace("data/face_ja_ea.bin")
+	Face = newDelayedFace("data/face_ja.bin", false)
+	FaceEA = newDelayedFace("data/face_ja_ea.bin", true)
 }
 
 var (

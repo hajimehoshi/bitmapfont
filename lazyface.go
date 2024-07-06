@@ -42,13 +42,15 @@ var _ font.Face = (*lazyFace)(nil)
 
 type lazyFace struct {
 	binFile  string
+	ea       bool
 	initOnce sync.Once
 	face     font.Face
 }
 
-func newDelayedFace(binFile string) *lazyFace {
+func newDelayedFace(binFile string, ea bool) *lazyFace {
 	return &lazyFace{
 		binFile: binFile,
+		ea:      ea,
 	}
 }
 
@@ -67,7 +69,7 @@ func (f *lazyFace) ensureInitialization() {
 			panic(err)
 		}
 
-		f.face = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), false)
+		f.face = bitmap.NewFace(bitmap.NewBinaryImage(bits, imageWidth, imageHeight), fixed.I(dotX), fixed.I(dotY), f.ea)
 	})
 }
 

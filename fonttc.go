@@ -22,8 +22,8 @@ import (
 )
 
 func init() {
-	FaceTC = &tcFace{face: newDelayedFace("data/face_zhhant.bin")}
-	FaceTCEA = &tcFace{face: newDelayedFace("data/face_zhhant_ea.bin")}
+	FaceTC = &tcFace{face: newDelayedFace("data/face_zhhant.bin", false)}
+	FaceTCEA = &tcFace{face: newDelayedFace("data/face_zhhant_ea.bin", true)}
 }
 
 var _ font.Face = (*tcFace)(nil)

@@ -23,7 +23,7 @@ import (
 
 func BenchmarkLazyFace(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		l := bitmapfont.NewLazyFace("data/face_ja.bin")
+		l := bitmapfont.NewLazyFace("data/face_ja.bin", false)
 		if _, _, _, _, ok := l.Glyph(fixed.P(0, 0), 'あ'); !ok {
 			b.Fatal("Glyph failed")
 		}

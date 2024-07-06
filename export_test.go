@@ -16,6 +16,6 @@ package bitmapfont
 
 type LazyFace = lazyFace
 
-func NewLazyFace(binFile string) *LazyFace {
-	return newDelayedFace(binFile)
+func NewLazyFace(binFile string, ea bool) *LazyFace {
+	return newDelayedFace(binFile, ea)
 }
