@@ -28,6 +28,7 @@ import (
 )
 
 // https://github.com/ACh-K/Cubic-11
+// Ver 1.400
 
 var face font.Face
 
@@ -35,7 +36,7 @@ func readTTF() (font.Face, error) {
 	_, current, _, _ := runtime.Caller(1)
 	dir := filepath.Dir(current)
 
-	ttfContent, err := os.ReadFile(filepath.Join(dir, "Cubic_11_1.300_R.ttf"))
+	ttfContent, err := os.ReadFile(filepath.Join(dir, "Cubic_11.ttf"))
 	if err != nil {
 		return nil, err
 	}
