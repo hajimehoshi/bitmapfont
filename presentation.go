@@ -15,6 +15,7 @@
 package bitmapfont
 
 import (
+	"strings"
 	"unicode"
 
 	"golang.org/x/text/language"
@@ -249,6 +250,20 @@ func reverseRunes(runes []rune) {
 //
 // [1] https://unicode.org/reports/tr9/
 func PresentationForms(input string, defaultDirection Direction, lang language.Tag) string {
+	var str string
+	for {
+		idx := strings.Index(input, "\n")
+		if idx == -1 {
+			str += presentationForms(input, defaultDirection, lang)
+			break
+		}
+		str += presentationForms(input[:idx], defaultDirection, lang) + "\n"
+		input = input[idx+1:]
+	}
+	return str
+}
+
+func presentationForms(input string, defaultDirection Direction, lang language.Tag) string {
 	canConnectBefore := func(r rune) bool {
 		f, ok := arabicLetterTable[r]
 		if !ok {
