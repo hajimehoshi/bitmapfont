@@ -18,6 +18,8 @@ import (
 	"testing"
 
 	"github.com/hajimehoshi/bitmapfont/v3"
+
+	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 )
 
@@ -26,6 +28,48 @@ func BenchmarkLazyFace(b *testing.B) {
 		l := bitmapfont.NewLazyFace("data/face_ja.bin", false)
 		if _, _, _, _, ok := l.Glyph(fixed.P(0, 0), 'あ'); !ok {
 			b.Fatal("Glyph failed")
+		}
+	}
+}
+
+func TestWidth(t *testing.T) {
+	testCaeses := []struct {
+		str string
+		w   fixed.Int26_6
+	}{
+		{
+			str: "",
+			w:   0,
+		},
+		{
+			str: "a",
+			w:   fixed.I(6),
+		},
+		{
+			str: "ä",
+			w:   fixed.I(6),
+		},
+		{
+			str: "あ",
+			w:   fixed.I(12),
+		},
+		{
+			str: "亜",
+			w:   fixed.I(12),
+		},
+		{
+			str: "ｱ",
+			w:   fixed.I(6),
+		},
+		{
+			str: "ｯ",
+			w:   fixed.I(6),
+		},
+	}
+	for _, tc := range testCaeses {
+		advance := font.MeasureString(bitmapfont.Face, tc.str)
+		if got, want := advance, tc.w; got != want {
+			t.Errorf("width for %q: got: %v, want: %v", tc.str, got, want)
 		}
 	}
 }
