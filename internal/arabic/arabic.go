@@ -102,7 +102,7 @@ func init() {
 	}
 
 	r := rune(0xfe70)
-	for j := 0; j < 16; j++ {
+	for j := 0; j < 8; j++ {
 		for i := 0; i < 16; i++ {
 			x := i * glyphFullWidth
 			y := j * glyphHeight
