@@ -29,7 +29,7 @@ import (
 	"golang.org/x/image/math/fixed"
 	"golang.org/x/text/language"
 
-	"github.com/hajimehoshi/bitmapfont/v3"
+	"github.com/hajimehoshi/bitmapfont/v4"
 )
 
 var (

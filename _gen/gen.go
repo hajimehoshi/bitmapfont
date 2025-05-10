@@ -25,13 +25,13 @@ import (
 	"github.com/pierrec/lz4/v4"
 	"golang.org/x/text/width"
 
-	"github.com/hajimehoshi/bitmapfont/v3/internal/arabic"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/ark"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/baekmuk"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/cubic11"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/fixed"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/mplus"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/arabic"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/ark"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/baekmuk"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/cubic11"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/fixed"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/mplus"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/unicode"
 )
 
 var (

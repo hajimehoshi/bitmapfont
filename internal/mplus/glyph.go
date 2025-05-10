@@ -20,8 +20,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/hajimehoshi/bitmapfont/v3/internal/bdf"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/uniconv"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/uniconv"
 )
 
 func jisToShiftJIS(index int) int {

@@ -24,7 +24,7 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/math/fixed"
 
-	"github.com/hajimehoshi/bitmapfont/v3/internal/bitmap"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/bitmap"
 )
 
 //go:embed data/*.bin

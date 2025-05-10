@@ -24,7 +24,7 @@ import (
 	"golang.org/x/image/math/fixed"
 	"golang.org/x/text/width"
 
-	iunicode "github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
+	iunicode "github.com/hajimehoshi/bitmapfont/v4/internal/unicode"
 )
 
 type BinaryImage struct {

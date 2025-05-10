@@ -24,7 +24,7 @@ import (
 	"golang.org/x/image/font/opentype"
 	"golang.org/x/image/math/fixed"
 
-	"github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/unicode"
 )
 
 // https://github.com/ACh-K/Cubic-11

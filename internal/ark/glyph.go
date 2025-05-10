@@ -19,8 +19,8 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/hajimehoshi/bitmapfont/v3/internal/bdf"
-	"github.com/hajimehoshi/bitmapfont/v3/internal/unicode"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/unicode"
 )
 
 // The current version is:
