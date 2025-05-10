@@ -40,7 +40,9 @@ func readBDF() (map[rune]*bdf.Glyph, error) {
 	}
 	for _, g := range glyphs {
 		r := rune(g.Encoding)
-		g.ShiftY = -1
+		// TODO: X and Y should be processed at (*bdf.Glyph).At.
+		g.ShiftX = g.X
+		g.ShiftY = -g.Y - 1
 		m[r] = g
 	}
 
