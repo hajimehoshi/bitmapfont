@@ -30,6 +30,7 @@ import (
 	"github.com/hajimehoshi/bitmapfont/v4/internal/baekmuk"
 	"github.com/hajimehoshi/bitmapfont/v4/internal/cubic11"
 	"github.com/hajimehoshi/bitmapfont/v4/internal/fixed"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/galmuri"
 	"github.com/hajimehoshi/bitmapfont/v4/internal/mplus"
 	"github.com/hajimehoshi/bitmapfont/v4/internal/unicode"
 )
@@ -53,6 +54,7 @@ const (
 	fontTypeFixed
 	fontTypeMPlus
 	fontTypeBaekmuk
+	fontTypeGalmuri
 	fontTypeArabic
 	fontTypeCubic11
 	fontTypeArk
@@ -64,12 +66,6 @@ func getFontType(r rune) fontType {
 		return fontTypeFixed
 	}
 
-	if 0x2500 <= r && r <= 0x257f {
-		// Box Drawing
-		// M+ defines a part of box drawing glyphs.
-		// For consistency, use other font's glyphs instead.
-		return fontTypeBaekmuk
-	}
 	if 0xff65 <= r && r <= 0xff9f {
 		// Halfwidth Katakana
 		return fontTypeMPlus
@@ -77,6 +73,12 @@ func getFontType(r rune) fontType {
 
 	if width.LookupRune(r).Kind() == width.EastAsianAmbiguous {
 		if *flagEastAsia {
+			if 0x2500 <= r && r <= 0x257f {
+				// Box Drawing
+				// M+ defines a part of box drawing glyphs.
+				// For consistency, use Galmuri glyphs instead.
+				return fontTypeGalmuri
+			}
 			return fontTypeMPlus
 		}
 		return fontTypeFixed
@@ -106,7 +108,11 @@ func getFontType(r rune) fontType {
 			return fontTypeMPlus
 		}
 	}
+	if _, ok := galmuri.Glyph(r); ok {
+		return fontTypeGalmuri
+	}
 	if _, ok := baekmuk.Glyph(r, 12); ok {
+		// Baekmuk contains some Chinese glyphs.
 		return fontTypeBaekmuk
 	}
 	if _, ok := arabic.Glyph(r); ok {
@@ -129,6 +135,10 @@ func getGlyph(r rune) (image.Image, bool) {
 		}
 	case fontTypeBaekmuk:
 		if g, ok := baekmuk.Glyph(r, 12); ok {
+			return g, true
+		}
+	case fontTypeGalmuri:
+		if g, ok := galmuri.Glyph(r); ok {
 			return g, true
 		}
 	case fontTypeArabic:

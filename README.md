@@ -28,6 +28,7 @@ The `TC` version prefers traditional Chinese characters.
  * [Ark Pixel Font](https://ark-pixel-font.takwolf.com/) (OFL-1.1)
  * [Baekmuk Gulim](https://kldp.net/baekmuk/) (Baekmuk License)
  * [Cubic 11](https://github.com/ACh-K/Cubic-11) (OFL-1.1)
+ * [Gulmuri](https://quiple.dev/galmuri) (OFL-1.1)
  * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
  * [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
  * Arabic glyphs by [@MansourSorosoro](https://twitter.com/MansourSorosoro) (Eternal Dream Arabization) (OFL-1.1)
