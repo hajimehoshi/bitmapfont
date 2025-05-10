@@ -75,6 +75,7 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			return nil, fmt.Errorf("baekmuk: invalid char code 0x%x", g.Encoding)
 		}
 
+		g.ShiftY -= 2
 		if needsShift(r, g) {
 			g.ShiftX = -1
 		}

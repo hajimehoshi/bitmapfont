@@ -24,12 +24,12 @@ import (
 	"strings"
 )
 
+// https://adobe-type-tools.github.io/font-tech-notes/pdfs/5005.BDF_Spec.pdf
+
 type Glyph struct {
 	Encoding int
 	Width    int
 	Height   int
-	X        int
-	Y        int
 	Bitmap   [][]byte
 
 	ShiftX int
@@ -48,13 +48,12 @@ func abs(x int) int {
 }
 
 func (g *Glyph) Bounds() image.Rectangle {
-	return image.Rect(0, 0, g.Width+abs(g.X), 16)
+	return image.Rect(0, 0, g.Width+abs(g.ShiftX), 16)
 }
 
 func (g *Glyph) At(x, y int) color.Color {
 	x -= g.ShiftX
 	y -= g.ShiftY
-	// TODO: Should g.X and g.Y be used?
 	y += g.Height - 14
 	if x < 0 || y < 0 || x >= g.Width || y >= g.Height {
 		return color.Alpha{}
@@ -108,8 +107,8 @@ func Parse(f io.Reader) ([]*Glyph, error) {
 			}
 			current.Width = int(w)
 			current.Height = int(h)
-			current.X = int(x)
-			current.Y = int(y)
+			current.ShiftX = int(x)
+			current.ShiftY = -int(y)
 		}
 		if strings.HasPrefix(line, "BITMAP") {
 			current.Bitmap = [][]byte{}

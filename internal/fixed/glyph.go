@@ -159,6 +159,7 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			}
 			return nil, fmt.Errorf("fixed: unexpected char: 0x%x (%s)", r, string(r))
 		}
+		g.ShiftY -= 2
 		m[r] = g
 	}
 

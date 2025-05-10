@@ -162,6 +162,12 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			return nil, fmt.Errorf("mplus: invalid char code 0x%x as JIS X 0201", g.Encoding)
 		}
 		if 0xff60 <= r && r <= 0xffdf {
+			switch size {
+			case 10:
+				g.ShiftY -= 1
+			case 12:
+				g.ShiftY -= 2
+			}
 			m[r] = g
 		}
 	}
@@ -189,8 +195,11 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 			return nil, fmt.Errorf("mplus: invalid glyph for rune 0x%x", r)
 		}
 
-		if size == 10 {
-			g.ShiftY = 1
+		switch size {
+		case 10:
+			g.ShiftY -= 1
+		case 12:
+			g.ShiftY -= 2
 		}
 
 		m[r] = g

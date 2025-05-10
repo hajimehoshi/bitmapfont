@@ -45,7 +45,7 @@ func readBDF(filename string) (map[rune]*bdf.Glyph, error) {
 	m := map[rune]*bdf.Glyph{}
 
 	for _, g := range glyphs {
-		g.ShiftY -= 1
+		g.ShiftY -= 3
 		m[rune(g.Encoding)] = g
 	}
 
