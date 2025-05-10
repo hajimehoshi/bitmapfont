@@ -14,6 +14,10 @@
 
 package unicode
 
+import (
+	"fmt"
+)
+
 func IsLatin(r rune) bool {
 	if r <= 0x02ff {
 		// Basic Latin
@@ -194,4 +198,52 @@ func IsCJKUnifiedIdeograph(r rune) bool {
 		return true
 	}
 	return false
+}
+
+const (
+	HangulLeadingConsonantCount = 19
+	HangulVowelCount            = 21
+	HangulTailingConsonantCount = 28
+
+	HangulLeadingConsonantCodePointBase = 0x1100
+	HangulVowelCodePointBase            = 0x1161
+	HangulTailingConsonantCodePointBase = 0x11a7
+)
+
+func ComposeHangulSyllable(l, v, t rune) rune {
+	if l < HangulLeadingConsonantCodePointBase || l >= HangulLeadingConsonantCodePointBase+HangulLeadingConsonantCount {
+		panic(fmt.Sprintf("unicode: invalid leading consonant: %c", l))
+	}
+	if v < HangulVowelCodePointBase || v >= HangulVowelCodePointBase+HangulVowelCount {
+		panic(fmt.Sprintf("unicode: invalid vowel: %c", v))
+	}
+	if t != 0 && t < HangulTailingConsonantCodePointBase || t >= HangulTailingConsonantCodePointBase+HangulTailingConsonantCount {
+		panic(fmt.Sprintf("unicode: invalid tailing consonant: %c", t))
+	}
+
+	lIdx := int(l - HangulLeadingConsonantCodePointBase)
+	vIdx := int(v - HangulVowelCodePointBase)
+	var tIdx int
+	if t != 0 {
+		tIdx = int(t - HangulTailingConsonantCodePointBase)
+	}
+	return rune(0xac00 + (lIdx*HangulVowelCount*HangulTailingConsonantCount + vIdx*HangulTailingConsonantCount + tIdx))
+}
+
+func DecomposeHangulSyllable(s rune) (l, v, t rune) {
+	if s < 0xac00 || s > 0xd7a3 {
+		panic(fmt.Sprintf("unicode: invalid Hangul syllable: %c", s))
+	}
+
+	s -= 0xac00
+	l = rune(s / (HangulVowelCount * HangulTailingConsonantCount))
+	v = rune((s % (HangulVowelCount * HangulTailingConsonantCount)) / HangulTailingConsonantCount)
+	t = rune(s % HangulTailingConsonantCount)
+
+	l += HangulLeadingConsonantCodePointBase
+	v += HangulVowelCodePointBase
+	if t != 0 {
+		t += HangulTailingConsonantCodePointBase
+	}
+	return
 }

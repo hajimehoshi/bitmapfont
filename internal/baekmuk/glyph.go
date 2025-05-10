@@ -21,6 +21,7 @@ import (
 	"runtime"
 
 	"github.com/hajimehoshi/bitmapfont/v4/internal/bdf"
+	"github.com/hajimehoshi/bitmapfont/v4/internal/unicode"
 	"github.com/hajimehoshi/bitmapfont/v4/internal/uniconv"
 )
 
@@ -82,6 +83,43 @@ func readBDF(size int) (map[rune]*bdf.Glyph, error) {
 		m[r] = g
 	}
 
+	if size == 10 {
+		return m, nil
+	}
+
+	// Complement the glyphs for 12px.
+	// See "Johab 8/4/4 Font Layout" in https://unifoundry.com/hangul/hangul-generation.html
+
+	/*for r := 0xac00; r <= 0xd7a3; r++ {
+		l, v, t := variationsFromHangulSyllable(rune(r))
+		println(l, v, t)
+	}*/
+
+	for lIdx := range unicode.HangulLeadingConsonantCount {
+		l := unicode.HangulLeadingConsonantCodePointBase + rune(lIdx)
+		for lVar := range 8 {
+			r := typicalGlyphForLeadingConsonantVariation(lVar, l)
+			if _, ok := m[r]; !ok {
+				panic(fmt.Sprintf("baekmuk: missing leading consonant variation: %c, l: %c lVar: %d", r, l, lVar))
+			}
+		}
+	}
+
+	/*for tIdx := range unicode.HangulTailingConsonantCount {
+		for vIdx := range unicode.HangulVowelCount {
+			for lIdx := range unicode.HangulLeadingConsonantCount {
+				l := unicode.HangulLeadingConsonantCodePointBase + rune(lIdx)
+				v := unicode.HangulVowelCodePointBase + rune(vIdx)
+				var t rune
+				if tIdx != 0 {
+					t = unicode.HangulTailingConsonantCodePointBase + rune(tIdx)
+				}
+				s := unicode.ComposeHangulSyllable(l, v, t)
+				fmt.Printf("%c\n", s)
+			}
+		}
+	}*/
+
 	return m, nil
 }
 
@@ -128,4 +166,127 @@ func Glyph(r rune, size int) (*bdf.Glyph, bool) {
 		return nil, false
 	}
 	return g, true
+}
+
+func typicalGlyphForLeadingConsonantVariation(lVar int, l rune) rune {
+	switch lVar {
+	case 0:
+		return unicode.ComposeHangulSyllable(l, 'ᅡ', 0)
+	case 1:
+		return unicode.ComposeHangulSyllable(l, 'ᅩ', 0)
+	case 2:
+		return unicode.ComposeHangulSyllable(l, 'ᅮ', 0)
+	case 3:
+		return unicode.ComposeHangulSyllable(l, 'ᅬ', 0)
+	case 4:
+		switch l {
+		case 'ᄄ':
+			return unicode.ComposeHangulSyllable(l, 'ᅰ', 0)
+		case 'ᄈ':
+			// No glyph for the variation 4 in KS X 1001. Use the variation 3 instead.
+			return unicode.ComposeHangulSyllable(l, 'ᅬ', 0)
+		default:
+			return unicode.ComposeHangulSyllable(l, 'ᅯ', 0)
+		}
+	case 5:
+		return unicode.ComposeHangulSyllable(l, 'ᅡ', 'ᆨ')
+	case 6:
+		return unicode.ComposeHangulSyllable(l, 'ᅩ', 'ᆨ')
+	case 7:
+		return unicode.ComposeHangulSyllable(l, 'ᅱ', 'ᆫ')
+	default:
+		panic(fmt.Sprintf("baekmuk: invalid leading consonant variation: %d", lVar))
+	}
+}
+
+func typicalGlyphForVowelVariation(vVar int, v rune) rune {
+	switch vVar {
+	case 0:
+		return unicode.ComposeHangulSyllable('ᄀ', v, 0)
+	case 1:
+		return unicode.ComposeHangulSyllable('ᄂ', v, 0)
+	case 2:
+		return unicode.ComposeHangulSyllable('ᄀ', v, 'ᆨ')
+	case 3:
+		return unicode.ComposeHangulSyllable('ᄂ', v, 'ᆨ')
+	default:
+		panic(fmt.Sprintf("baekmuk: invalid vowel variation: %d", vVar))
+	}
+}
+
+func typicalGlyphForTailingConsonantVariation(tVar int, t rune) rune {
+	switch tVar {
+	case -1:
+		return 0
+	case 0:
+		return unicode.ComposeHangulSyllable('ᄀ', 'ᅡ', t)
+	case 1:
+		return unicode.ComposeHangulSyllable('ᄀ', 'ᅥ', t)
+	case 2:
+		return unicode.ComposeHangulSyllable('ᄀ', 'ᅢ', t)
+	case 3:
+		return unicode.ComposeHangulSyllable('ᄀ', 'ᅩ', t)
+	default:
+		panic(fmt.Sprintf("baekmuk: invalid tailing consonant variation: %d", tVar))
+	}
+}
+
+func variationsFromHangulSyllable(r rune) (int, int, int) {
+	// See "Johab 8/4/4 Font Layout" in https://unifoundry.com/hangul/hangul-generation.html
+	l, v, t := unicode.DecomposeHangulSyllable(r)
+
+	if t == 0 {
+		var lVar, vVar int
+		switch v {
+		case 'ᅡ', 'ᅢ', 'ᅣ', 'ᅤ', 'ᅥ', 'ᅦ', 'ᅧ', 'ᅨ', 'ᅵ':
+			lVar = 0
+		case 'ᅩ', 'ᅭ', 'ᅳ':
+			lVar = 1
+		case 'ᅮ', 'ᅲ':
+			lVar = 2
+		case 'ᅪ', 'ᅫ', 'ᅬ', 'ᅴ':
+			lVar = 3
+		case 'ᅯ', 'ᅰ', 'ᅱ':
+			lVar = 4
+		default:
+			panic(fmt.Sprintf("baekmuk: invalid vowel: %c", v))
+		}
+		if l == 'ᄀ' || l == 'ᄏ' {
+			vVar = 0
+		} else {
+			vVar = 1
+		}
+		return lVar, vVar, -1
+	}
+
+	var lVar, vVar, tVar int
+	switch v {
+	case 'ᅡ', 'ᅢ', 'ᅣ', 'ᅤ', 'ᅥ', 'ᅦ', 'ᅧ', 'ᅨ', 'ᅵ':
+		lVar = 5
+	case 'ᅩ', 'ᅭ', 'ᅮ', 'ᅲ', 'ᅳ':
+		lVar = 6
+	case 'ᅪ', 'ᅫ', 'ᅬ', 'ᅯ', 'ᅰ', 'ᅱ', 'ᅴ':
+		lVar = 7
+	default:
+		panic(fmt.Sprintf("baekmuk: invalid vowel: %c", v))
+	}
+	if l == 'ᄀ' || l == 'ᄏ' {
+		vVar = 2
+	} else {
+		vVar = 3
+	}
+	switch v {
+	case 'ᅡ', 'ᅣ', 'ᅪ':
+		tVar = 0
+	case 'ᅥ', 'ᅧ', 'ᅬ', 'ᅯ', 'ᅱ', 'ᅴ', 'ᅵ':
+		tVar = 1
+	case 'ᅢ', 'ᅤ', 'ᅦ', 'ᅨ', 'ᅫ', 'ᅰ':
+		tVar = 2
+	case 'ᅩ', 'ᅭ', 'ᅮ', 'ᅲ', 'ᅳ':
+		tVar = 3
+	default:
+		panic(fmt.Sprintf("baekmuk: invalid vowel: %c", v))
+	}
+
+	return lVar, vVar, tVar
 }
