@@ -30,7 +30,7 @@ The `TC` version prefers traditional Chinese characters.
  * [Cubic 11](https://github.com/ACh-K/Cubic-11) (OFL-1.1)
  * [Gulmuri](https://quiple.dev/galmuri) (OFL-1.1)
  * [misc-fixed](https://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html) (Public Domain)
- * [M+ Bitmap Font](https://mplus-fonts.osdn.jp/mplus-bitmap-fonts/) (M+ Bitmap Fonts License)
+ * [M+ Bitmap Font](https://github.com/coz-m/MPLUS_FONTS/tree/master/obsolete) (M+ Bitmap Fonts License)
  * Arabic glyphs by [@MansourSorosoro](https://twitter.com/MansourSorosoro) (Eternal Dream Arabization) (OFL-1.1)
 
 There is one font face with glyph size 6x13 for halfwidth, and 12x13 for fullwidth so far.
