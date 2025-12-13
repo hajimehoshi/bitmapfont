@@ -24,7 +24,7 @@ import (
 )
 
 // The current version is:
-// https://github.com/TakWolf/ark-pixel-font/releases/tag/2025.10.20
+// https://github.com/TakWolf/ark-pixel-font/releases/tag/2025.12.11
 // (ark-pixel-font-12px-monospaced-bdf-*.zip)
 
 func readBDF(filename string) (map[rune]*bdf.Glyph, error) {
