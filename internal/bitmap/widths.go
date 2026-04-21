@@ -31,4 +31,7 @@ var wideRunes = map[rune]struct{}{
 	0xfeba: {},
 	0xfebd: {},
 	0xfebe: {},
+	0xfefd: {},
+	0xfefe: {},
+	0xfeff: {},
 }
