@@ -28,7 +28,7 @@ import (
 )
 
 // https://github.com/ACh-K/Cubic-11
-// Ver 1.451
+// Ver 1.500
 
 var face font.Face
 
