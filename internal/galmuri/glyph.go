@@ -23,7 +23,7 @@ import (
 )
 
 // https://github.com/quiple/galmuri
-// The current version is v2.40.3.
+// The current version is v2.40.4.
 
 func readBDF() (map[rune]*bdf.Glyph, error) {
 	_, current, _, _ := runtime.Caller(1)
