@@ -24,7 +24,7 @@ import (
 )
 
 // The current version is:
-// https://github.com/TakWolf/ark-pixel-font/releases/tag/2026.09.01
+// https://github.com/TakWolf/ark-pixel-font/releases/tag/2026.09.25
 // (ark-pixel-font-12px-monospaced-bdf-*.zip)
 
 func readBDF(filename string) (map[rune]*bdf.Glyph, error) {
@@ -58,13 +58,13 @@ var (
 )
 
 func init() {
-	g, err := readBDF("ark-pixel-12px-monospaced-zh_cn.bdf")
+	g, err := readBDF("ark-pixel-12px-monospaced-zh_hans.bdf")
 	if err != nil {
 		panic(err)
 	}
 	cnGlyphs = g
 
-	g, err = readBDF("ark-pixel-12px-monospaced-zh_tr.bdf")
+	g, err = readBDF("ark-pixel-12px-monospaced-zh_hant.bdf")
 	if err != nil {
 		panic(err)
 	}
